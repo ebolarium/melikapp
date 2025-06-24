@@ -10,6 +10,9 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // API base URL configuration
+  const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
+
   // Load user from localStorage on app start
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -30,7 +33,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       setError(null);
 
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
         email,
         password
       });
@@ -58,7 +61,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       setError(null);
 
-      const response = await axios.post('http://localhost:5000/api/auth/signup', userData);
+      const response = await axios.post(`${API_BASE_URL}/auth/signup`, userData);
 
       const { user } = response.data;
 
