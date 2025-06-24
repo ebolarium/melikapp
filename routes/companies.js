@@ -19,6 +19,9 @@ router.get('/filter-options', simpleAuth, getFilterOptions);
 // GET /api/companies/stats - Get company statistics (must come before /:id)
 router.get('/stats', simpleAuth, getCompanyStats);
 
+// POST /api/companies/call-records - Create call record (must come before /:id)
+router.post('/call-records', simpleAuth, createCallRecord);
+
 // GET /api/companies - Get all companies with search, filters, pagination
 router.get('/', simpleAuth, getCompanies);
 
@@ -33,9 +36,6 @@ router.put('/:id', simpleAuth, updateCompany);
 
 // DELETE /api/companies/:id - Delete company
 router.delete('/:id', simpleAuth, deleteCompany);
-
-// POST /api/companies/call-records - Create call record
-router.post('/call-records', simpleAuth, createCallRecord);
 
 // GET /api/companies/:id/call-records - Get call records for a company
 router.get('/:id/call-records', simpleAuth, getCompanyCallRecords);
