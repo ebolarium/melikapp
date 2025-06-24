@@ -1,0 +1,100 @@
+/* Raporlar Page Styles */
+
+.raporlar-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+}
+
+.raporlar-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.raporlar-header p {
+  margin: 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.raporlar-content {
+  margin-top: 2rem;
+}
+
+/* Reports Grid Layout */
+.reports-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.calendar-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-section h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+.calls-section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .reports-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .raporlar-header {
+    padding: 1rem;
+  }
+
+  .raporlar-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .raporlar-header p {
+    font-size: 1rem;
+  }
+  
+  .calendar-section {
+    padding: 1rem;
+  }
+  
+  .calendar-section h2 {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .reports-grid {
+    gap: 1rem;
+  }
+  
+  .raporlar-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .raporlar-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .raporlar-content {
+    margin-top: 1.5rem;
+  }
+} 

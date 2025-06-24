@@ -1,0 +1,186 @@
+/* Minimal Today's Calls Styles */
+
+.todays-calls.minimal {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Header */
+.calls-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.calls-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.call-count {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Loading and Error */
+.loading, .error, .no-calls {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.error {
+  color: #f44336;
+}
+
+.no-calls {
+  color: #999;
+  font-style: italic;
+}
+
+/* Calls List */
+.calls-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Call Item */
+.call-item {
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.call-item:hover {
+  border-color: #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Company Info (Clickable) */
+.company-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  cursor: pointer;
+  background: #fff;
+  transition: background 0.2s;
+}
+
+.company-info:hover {
+  background: #f9f9f9;
+}
+
+.company-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+  flex: 1;
+}
+
+.call-time {
+  font-size: 0.8rem;
+  color: #666;
+  font-family: monospace;
+}
+
+/* Call Details (Expandable) */
+.call-details {
+  background: #f8f9fa;
+  border-top: 1px solid #f0f0f0;
+  padding: 0.75rem;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Detail Rows */
+.detail-row {
+  display: flex;
+  margin-bottom: 0.5rem;
+  align-items: flex-start;
+}
+
+.detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.detail-row .label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #666;
+  min-width: 50px;
+  margin-right: 0.5rem;
+}
+
+.detail-row .value {
+  font-size: 0.8rem;
+  color: #333;
+  flex: 1;
+}
+
+.detail-row .value.result {
+  font-weight: 600;
+}
+
+.detail-row .value.notes {
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .todays-calls.minimal {
+    max-width: 100%;
+    padding: 0.75rem;
+  }
+  
+  .calls-header h3 {
+    font-size: 1rem;
+  }
+  
+  .company-info {
+    padding: 0.6rem;
+  }
+  
+  .company-name {
+    font-size: 0.85rem;
+  }
+  
+  .call-time {
+    font-size: 0.75rem;
+  }
+  
+  .call-details {
+    padding: 0.6rem;
+  }
+  
+  .detail-row .label {
+    min-width: 45px;
+  }
+} 

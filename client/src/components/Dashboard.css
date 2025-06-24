@@ -1,0 +1,600 @@
+/* Dashboard Styles */
+
+.content-container {
+  padding-top: 0 !important;
+}
+
+/* Progress Section */
+.progress-section {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  margin-top: 0;
+  border: 1px solid #e2e8f0;
+}
+
+.loading-text {
+  color: #718096;
+  font-size: 0.9rem;
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.error-text {
+  color: #e53e3e;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Progress Container */
+.progress-container {
+  width: 100%;
+}
+
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.progress-start {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #718096;
+  min-width: 20px;
+}
+
+.progress-end {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #667eea;
+  min-width: 40px;
+}
+
+/* Progress Bar */
+.progress-bar {
+  flex: 1;
+  height: 30px;
+  background: #f7fafc;
+  border-radius: 15px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #667eea;
+  border-radius: 14px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  transition: width 1.5s ease-out;
+}
+
+.progress-text {
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  z-index: 1;
+  position: relative;
+}
+
+/* Daily Call Target Progress Bar */
+.progress-container.daily-target {
+  margin-top: 1rem;
+}
+
+.progress-fill.daily-calls {
+  background: #10b981;
+}
+
+.progress-container.daily-target .progress-end {
+  color: #10b981;
+}
+
+/* Charts Section */
+.charts-section {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  align-items: flex-start;
+}
+
+.charts-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.donut-chart-container {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  text-align: left;
+  max-width: 400px;
+}
+
+.donut-chart-container h3 {
+  color: #2d3748;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+}
+
+.donut-chart-wrapper {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.donut-svg-container {
+  flex-shrink: 0;
+}
+
+.donut-segment {
+  transition: opacity 0.3s ease;
+}
+
+.donut-segment:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.donut-center-text {
+  font-size: 12px;
+  fill: #718096;
+  font-weight: 500;
+}
+
+.donut-center-number {
+  font-size: 18px;
+  fill: #2d3748;
+  font-weight: 700;
+}
+
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 140px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legend-text {
+  font-size: 0.85rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.chart-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #718096;
+  font-style: italic;
+}
+
+.chart-no-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #718096;
+}
+
+/* Random Companies Card */
+.random-companies-container {
+  flex: 1;
+}
+
+.random-companies-card {
+  background: white;
+  border-radius: 6px;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  height: fit-content;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.random-companies-card h3 {
+  color: #2d3748;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.card-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.city-selector {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  background: white;
+  color: #4a5568;
+  min-width: 120px;
+}
+
+.city-selector:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.brands-selector {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  background: white;
+  color: #4a5568;
+  min-width: 120px;
+}
+
+.brands-selector:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.bring-button {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.bring-button:hover {
+  background: #5a67d8;
+}
+
+.bring-button:active {
+  transform: none;
+}
+
+.companies-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  color: #718096;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+.companies-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.company-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  transition: background 0.2s ease;
+}
+
+.company-item:hover {
+  background: #f8fafc;
+}
+
+.company-info {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  max-width: calc(100% - 60px);
+}
+
+.company-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #4a5568;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  justify-self: start;
+}
+
+.company-separator {
+  font-size: 0.7rem;
+  color: #a0aec0;
+  justify-self: center;
+  flex-shrink: 0;
+}
+
+.company-brands {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #718096;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  justify-self: start;
+}
+
+.call-button {
+  background: transparent;
+  color: #667eea;
+  border: none;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 0.75rem;
+}
+
+.call-button:hover {
+  background: #f0f4ff;
+  color: #5a67d8;
+}
+
+.call-button:active {
+  transform: none;
+}
+
+/* Scrollbar Styling */
+.companies-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.companies-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.companies-list::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.companies-list::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Dashboard Content */
+.dashboard-content {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.dashboard-content p {
+  color: #718096;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .charts-section {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .charts-column {
+    gap: 1rem;
+  }
+  
+  .random-companies-container {
+    max-width: none;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .card-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .city-selector {
+    min-width: 100px;
+  }
+
+  .brands-selector {
+    min-width: 100px;
+  }
+
+  .bring-button {
+    min-width: 60px;
+  }
+  
+  .company-item {
+    padding: 0.4rem 0.6rem;
+  }
+  
+  .company-info {
+    gap: 0.75rem;
+  }
+  
+  .company-name {
+    font-size: 0.75rem;
+  }
+  
+  .company-brands {
+    font-size: 0.7rem;
+  }
+  
+  .company-separator {
+    font-size: 0.65rem;
+  }
+
+  .progress-section {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .progress-row {
+    gap: 0.75rem;
+  }
+  
+  .progress-start,
+  .progress-end {
+    font-size: 0.8rem;
+  }
+  
+  .progress-bar {
+    height: 25px;
+  }
+  
+  .progress-fill {
+    min-width: 60px;
+  }
+  
+  .progress-text {
+    font-size: 0.75rem;
+  }
+  
+  .donut-chart-container {
+    padding: 1rem;
+    max-width: 100%;
+  }
+  
+  .donut-chart-wrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .donut-svg-container svg {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .dashboard-content {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .progress-section {
+    padding: 1rem;
+  }
+  
+  .progress-row {
+    gap: 0.5rem;
+  }
+  
+  .progress-start,
+  .progress-end {
+    font-size: 0.75rem;
+  }
+  
+  .progress-bar {
+    height: 25px;
+  }
+  
+  .progress-text {
+    font-size: 0.7rem;
+  }
+  
+  .company-item {
+    padding: 0.35rem 0.5rem;
+  }
+  
+  .company-info {
+    gap: 0.5rem;
+    grid-template-columns: 1.2fr auto 1fr;
+  }
+  
+  .company-name {
+    font-size: 0.7rem;
+  }
+  
+  .company-brands {
+    font-size: 0.65rem;
+  }
+  
+  .company-separator {
+    font-size: 0.6rem;
+  }
+
+  .card-controls {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 0.4rem;
+  }
+
+  .bring-button {
+    grid-column: 1 / -1;
+    justify-self: center;
+    min-width: 80px;
+  }
+
+  .city-selector,
+  .brands-selector {
+    min-width: 80px;
+    font-size: 0.75rem;
+  }
+  
+  .donut-chart-container {
+    padding: 1rem;
+  }
+  
+  .donut-svg-container svg {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .donut-legend {
+    min-width: auto;
+  }
+  
+  .legend-text {
+    font-size: 0.8rem;
+  }
+} 
