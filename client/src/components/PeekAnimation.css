@@ -1,0 +1,105 @@
+.peek-animation-container {
+  position: fixed;
+  bottom: 0;
+  z-index: 1000;
+  pointer-events: none; /* Don't interfere with page interactions */
+  transition: left 0.3s ease; /* Smooth position changes */
+}
+
+.peek-animation {
+  transform: translateY(60px); /* Start hidden below the screen */
+  animation: peekaBoo 2s ease-in-out forwards;
+}
+
+@keyframes peekaBoo {
+  0% {
+    transform: translateY(60px);
+    opacity: 0;
+  }
+  
+  25% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  75% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  100% {
+    transform: translateY(60px);
+    opacity: 0;
+  }
+}
+
+/* Add a subtle shadow for depth */
+.peek-animation::before {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .peek-animation {
+    transform: scale(0.8) translateY(60px);
+  }
+  
+  @keyframes peekaBoo {
+    0% {
+      transform: scale(0.8) translateY(60px);
+      opacity: 0;
+    }
+    
+    25% {
+      transform: scale(0.8) translateY(0);
+      opacity: 1;
+    }
+    
+    75% {
+      transform: scale(0.8) translateY(0);
+      opacity: 1;
+    }
+    
+    100% {
+      transform: scale(0.8) translateY(60px);
+      opacity: 0;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .peek-animation {
+    transform: scale(0.7) translateY(60px);
+  }
+  
+  @keyframes peekaBoo {
+    0% {
+      transform: scale(0.7) translateY(60px);
+      opacity: 0;
+    }
+    
+    25% {
+      transform: scale(0.7) translateY(0);
+      opacity: 1;
+    }
+    
+    75% {
+      transform: scale(0.7) translateY(0);
+      opacity: 1;
+    }
+    
+    100% {
+      transform: scale(0.7) translateY(60px);
+      opacity: 0;
+    }
+  }
+} 

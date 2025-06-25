@@ -6,6 +6,8 @@ import AuthWrapper from './components/AuthWrapper';
 import Dashboard from './components/Dashboard';
 import Firmalar from './components/Firmalar';
 import Raporlar from './components/Raporlar';
+import PeekAnimation from './components/PeekAnimation';
+import UnicornAnimation from './components/UnicornAnimation';
 import './App.css';
 
 // Dashboard page wrapper with AppBar
@@ -14,6 +16,8 @@ const DashboardPage = () => {
     <div className="App">
       <AppBar />
       <Dashboard />
+      <PeekAnimation />
+      <UnicornAnimation />
     </div>
   );
 };
@@ -24,6 +28,8 @@ const FirmalarPage = () => {
     <div className="App">
       <AppBar />
       <Firmalar />
+      <PeekAnimation />
+      <UnicornAnimation />
     </div>
   );
 };
@@ -34,6 +40,8 @@ const RaporlarPage = () => {
     <div className="App">
       <AppBar />
       <Raporlar />
+      <PeekAnimation />
+      <UnicornAnimation />
     </div>
   );
 };

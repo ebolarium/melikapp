@@ -1,0 +1,68 @@
+.unicorn-animation-container {
+  position: fixed;
+  right: -200px; /* Start off-screen to the right - increased for bigger size */
+  z-index: 1000;
+  pointer-events: none;
+  animation: flyAcrossScreen 5s linear forwards;
+}
+
+.unicorn-animation {
+  transform-origin: center;
+  filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+/* Animation for flying from right to left across the screen */
+@keyframes flyAcrossScreen {
+  0% {
+    right: -200px;
+    transform: translateY(0px) scale(1);
+  }
+  
+  25% {
+    transform: translateY(-15px) scale(1.1);
+  }
+  
+  50% {
+    transform: translateY(8px) scale(1);
+  }
+  
+  75% {
+    transform: translateY(-8px) scale(0.95);
+  }
+  
+  100% {
+    right: 100vw;
+    transform: translateY(0px) scale(0.9);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .unicorn-animation-container {
+    right: -160px;
+  }
+  
+  .unicorn-animation {
+    transform: scale(0.8);
+  }
+  
+  @keyframes flyAcrossScreen {
+    0% { right: -160px; }
+    100% { right: 100vw; }
+  }
+}
+
+@media (max-width: 480px) {
+  .unicorn-animation-container {
+    right: -120px;
+  }
+  
+  .unicorn-animation {
+    transform: scale(0.6);
+  }
+  
+  @keyframes flyAcrossScreen {
+    0% { right: -120px; }
+    100% { right: 100vw; }
+  }
+} 

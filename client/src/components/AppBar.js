@@ -67,7 +67,7 @@ const AppBar = () => {
             </button>
             */}
             
-            {/* Animation Test Button - HIDDEN FOR PRODUCTION 
+            {/* Animation Test Button - ACTIVATED FOR TESTING */}
             <div className="animation-selector">
               <button 
                 className="animation-test-btn"
@@ -97,10 +97,15 @@ const AppBar = () => {
                   <div className="animation-option" onClick={() => window.testAnimation?.('simple')}>
                     ✓ Simple
                   </div>
+                  <div className="animation-option" onClick={() => window.testPeekAnimation?.()}>
+                    👀 Peek
+                  </div>
+                  <div className="animation-option" onClick={() => window.testUnicornAnimation?.()}>
+                    🦄 Unicorn
+                  </div>
                 </div>
               )}
             </div>
-            */}
             
             {/* Email Test Result */}
             {emailTestResult && (
