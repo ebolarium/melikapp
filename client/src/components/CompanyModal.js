@@ -338,18 +338,10 @@ const CompanyModal = ({
                     className="form-select"
                   >
                     <option value="">Yaş seçiniz</option>
-                    {filterOptions && filterOptions.spectroAges && filterOptions.spectroAges.length > 0 ? (
-                      filterOptions.spectroAges.map(age => (
-                        <option key={age} value={age}>{age}</option>
-                      ))
-                    ) : (
-                      <>
-                        <option value="Eski">Eski</option>
-                        <option value="Orta">Orta</option>
-                        <option value="Yeni">Yeni</option>
-                        <option value="Belirtilmemiş">Belirtilmemiş</option>
-                      </>
-                    )}
+                    <option value="Eski">Eski</option>
+                    <option value="Orta">Orta</option>
+                    <option value="Yeni">Yeni</option>
+                    <option value="Belirtilmemiş">Belirtilmemiş</option>
                   </select>
                 </div>
               </div>

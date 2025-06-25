@@ -56,7 +56,7 @@ const companySchema = new mongoose.Schema({
     type: String,
     enum: {
       values: ['Eski', 'Orta', 'Yeni', 'Belirtilmemiş'],
-      message: 'Spectro age must be Eski, Orta, or Yeni'
+      message: 'Spectro age must be Eski, Orta, Yeni, or Belirtilmemiş'
     }
   },
   notes: {

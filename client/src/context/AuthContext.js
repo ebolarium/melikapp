@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { authAPI } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -26,6 +27,31 @@ export const AuthProvider = ({ children }) => {
       }
     }
   }, []);
+
+  // Refresh user data function
+  const refreshUser = async () => {
+    try {
+      console.log('🔄 Refreshing user data...');
+      const response = await authAPI.getProfile();
+      
+      if (response.data.success) {
+        const updatedUser = response.data.user;
+        console.log('✅ User data refreshed. New points:', updatedUser.points);
+        
+        // Update localStorage and state
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setUser(updatedUser);
+        
+        return { success: true, user: updatedUser };
+      } else {
+        console.log('❌ Failed to refresh user data: API returned false');
+        return { success: false };
+      }
+    } catch (error) {
+      console.error('❌ Failed to refresh user data:', error);
+      return { success: false };
+    }
+  };
 
   // Login function
   const login = async (email, password) => {
@@ -101,7 +127,8 @@ export const AuthProvider = ({ children }) => {
     login,
     signup,
     logout,
-    clearError
+    clearError,
+    refreshUser
   };
 
   return (

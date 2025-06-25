@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { companiesAPI } from '../services/api';
+import { companiesAPI, authAPI } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import CompanyModal from './CompanyModal';
+import CallAnimation from './CallAnimation';
 import './Firmalar.css';
 
 const Firmalar = () => {
+  const { refreshUser } = useAuth();
   // State management
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,6 +45,12 @@ const Firmalar = () => {
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
+
+  // Animation state
+  const [showAnimation, setShowAnimation] = useState(false);
+  const [animationType, setAnimationType] = useState('heart');
+  const [targetReached, setTargetReached] = useState(false);
+  const [isAnimationSequence, setIsAnimationSequence] = useState(false);
 
   // Fetch companies with current filters and pagination
   const fetchCompanies = useCallback(async () => {
@@ -180,6 +189,50 @@ const Firmalar = () => {
         company._id === updatedCompany._id ? updatedCompany : company
       )
     );
+  };
+
+  // Handle call record created (same logic as Dashboard)
+  const handleCallRecordCreated = async () => {
+    console.log('📞 Call recorded from Firmalar page - starting refresh...');
+    
+    // Refresh companies list to show updated call counts
+    await fetchCompanies();
+    
+    // Refresh global user data in AuthContext (this will update AppBar points)
+    console.log('🔄 Calling refreshUser from Firmalar...');
+    const refreshResult = await refreshUser();
+    console.log('🔄 RefreshUser result:', refreshResult);
+    
+    // Check if target is reached after this call
+    try {
+      const updatedProfile = await authAPI.getProfile();
+      if (updatedProfile.data.success) {
+        const user = updatedProfile.data.user;
+        console.log('📊 Updated user data:', { points: user.points, todaysCalls: user.todaysCalls });
+        const hasReachedTarget = user.todaysCalls >= user.targetCallNumber && user.targetCallNumber > 0;
+        
+        if (hasReachedTarget) {
+          // Target reached - play heart then crown sequence
+          setTargetReached(true);
+          setIsAnimationSequence(true);
+          setAnimationType('heart');
+        } else {
+          // Normal call - just play heart animation
+          setTargetReached(false);
+          setIsAnimationSequence(false);
+          setAnimationType('heart');
+        }
+        
+        setShowAnimation(true);
+      }
+    } catch (error) {
+      console.error('Error checking user profile:', error);
+      // Still show animation even if profile check fails
+      setTargetReached(false);
+      setIsAnimationSequence(false);
+      setAnimationType('heart');
+      setShowAnimation(true);
+    }
   };
 
   return (
@@ -434,7 +487,21 @@ const Firmalar = () => {
           onClose={handleModalClose}
           company={selectedCompany}
           onCompanyUpdated={handleCompanyUpdated}
+          onCallRecordCreated={handleCallRecordCreated}
           filterOptions={filterOptions}
+        />
+
+        {/* Call Success Animation */}
+        <CallAnimation 
+          isVisible={showAnimation}
+          animationType={animationType}
+          isSequence={isAnimationSequence}
+          targetReached={targetReached}
+          onComplete={() => {
+            setShowAnimation(false);
+            setIsAnimationSequence(false);
+            setTargetReached(false);
+          }}
         />
       </div>
     </main>

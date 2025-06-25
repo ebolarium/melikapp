@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { companiesAPI, authAPI } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import './Dashboard.css';
 import CompanyModal from './CompanyModal';
 import CallAnimation from './CallAnimation';
@@ -305,6 +306,7 @@ const RandomCompaniesCard = ({ companies, loading, onCompanyClick, filterOptions
 };
 
 const Dashboard = () => {
+  const { refreshUser } = useAuth();
   const [companyCount, setCompanyCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -630,9 +632,12 @@ const Dashboard = () => {
           filterOptions={filterOptions}
           onCompanyUpdated={() => {}}
           onCallRecordCreated={async () => {
-            // Refresh data first to get updated call counts
+            // Refresh local dashboard data
             await fetchUserProfile();
             await fetchDashboardData();
+            
+            // Refresh global user data in AuthContext (this will update AppBar points)
+            await refreshUser();
             
             // Check if target is reached after this call
             const updatedProfile = await authAPI.getProfile();
