@@ -67,7 +67,7 @@ const AppBar = () => {
             </button>
             */}
             
-            {/* Animation Test Button - ACTIVATED FOR TESTING */}
+            {/* Animation Test Button - HIDDEN FOR PRODUCTION
             <div className="animation-selector">
               <button 
                 className="animation-test-btn"
@@ -106,6 +106,7 @@ const AppBar = () => {
                 </div>
               )}
             </div>
+            */}
             
             {/* Email Test Result */}
             {emailTestResult && (
