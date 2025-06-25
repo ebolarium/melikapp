@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
+const { initCronJobs } = require('./services/cronService');
 require('dotenv').config();
 
 const app = express();
@@ -28,6 +29,7 @@ app.get('/api', (req, res) => {
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/companies', require('./routes/companies'));
 app.use('/api/users', require('./routes/users'));
+app.use('/api/reports', require('./routes/reports'));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is healthy' });
@@ -81,4 +83,7 @@ app.listen(PORT, () => {
   if (process.env.NODE_ENV === 'production') {
     console.log('📁 Serving React app from client/build folder');
   }
+  
+  // Initialize cron jobs
+  initCronJobs();
 }); 

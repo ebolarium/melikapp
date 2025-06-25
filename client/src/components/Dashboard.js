@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { companiesAPI, authAPI } from '../services/api';
 import './Dashboard.css';
 import CompanyModal from './CompanyModal';
+import CallAnimation from './CallAnimation';
 
 // Donut Chart Component
 const DonutChart = ({ data, loading }) => {
@@ -326,6 +327,10 @@ const Dashboard = () => {
   const [selectedBrands, setSelectedBrands] = useState('');
   const [processedCompanies, setProcessedCompanies] = useState(0);
   const [pantoneData, setPantoneData] = useState([]);
+  const [showAnimation, setShowAnimation] = useState(false);
+  const [animationType, setAnimationType] = useState('points');
+  const [targetReached, setTargetReached] = useState(false);
+  const [isAnimationSequence, setIsAnimationSequence] = useState(false);
 
   // Handle company click to open modal
   const handleCompanyClick = (company) => {
@@ -498,6 +503,30 @@ const Dashboard = () => {
     }
   };
 
+  // Test animation function
+  const testAnimation = (type) => {
+    setAnimationType(type);
+    
+    // Special case: if testing crown directly, treat it as target reached
+    if (type === 'crown') {
+      setTargetReached(true);
+      setIsAnimationSequence(false); // Don't sequence when testing crown directly
+    } else {
+      setTargetReached(false);
+      setIsAnimationSequence(false);
+    }
+    
+    setShowAnimation(true);
+  };
+
+  // Expose test function globally for AppBar access
+  useEffect(() => {
+    window.testAnimation = testAnimation;
+    return () => {
+      delete window.testAnimation;
+    };
+  }, []);
+
   // Load initial data
   useEffect(() => {
     fetchDashboardData();
@@ -589,10 +618,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Additional Dashboard Content */}
-        <div className="dashboard-content">
-          <p>Dashboard içeriği burada geliştirilecek.</p>
-        </div>
+
       </div>
 
       {/* Company Details Modal */}
@@ -603,12 +629,47 @@ const Dashboard = () => {
           onClose={handleModalClose}
           filterOptions={filterOptions}
           onCompanyUpdated={() => {}}
-          onCallRecordCreated={() => {
-            fetchUserProfile();
-            fetchDashboardData(); // Refresh dashboard data including Pantone chart
+          onCallRecordCreated={async () => {
+            // Refresh data first to get updated call counts
+            await fetchUserProfile();
+            await fetchDashboardData();
+            
+            // Check if target is reached after this call
+            const updatedProfile = await authAPI.getProfile();
+            if (updatedProfile.data.success) {
+              const user = updatedProfile.data.user;
+              const hasReachedTarget = user.todaysCalls >= user.targetCallNumber && user.targetCallNumber > 0;
+              
+              if (hasReachedTarget) {
+                // Target reached - play heart then crown sequence
+                setTargetReached(true);
+                setIsAnimationSequence(true);
+                setAnimationType('heart');
+              } else {
+                // Normal call - just play heart animation
+                setTargetReached(false);
+                setIsAnimationSequence(false);
+                setAnimationType('heart');
+              }
+              
+              setShowAnimation(true);
+            }
           }}
         />
       )}
+
+              {/* Call Success Animation */}
+        <CallAnimation 
+          isVisible={showAnimation}
+          animationType={animationType}
+          isSequence={isAnimationSequence}
+          targetReached={targetReached}
+          onComplete={() => {
+            setShowAnimation(false);
+            setIsAnimationSequence(false);
+            setTargetReached(false);
+          }}
+        />
     </main>
   );
 };

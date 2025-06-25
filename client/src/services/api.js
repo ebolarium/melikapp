@@ -86,4 +86,10 @@ export const companiesAPI = {
   getCompanyCallRecords: (companyId) => api.get(`/companies/${companyId}/call-records`),
 };
 
+// Reports API
+export const reportsAPI = {
+  // Test daily email report (development only)
+  testDailyReport: () => api.post('/reports/test-daily-report'),
+};
+
 export default api; 

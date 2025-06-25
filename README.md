@@ -111,6 +111,49 @@ This CRM application includes:
 - Dashboard with statistics
 - Responsive UI design
 
+## 📧 Daily Email Reports
+
+The application includes an automated daily email report system that:
+
+- **Automatically sends daily reports at 19:00 Turkey time**
+- **Gathers data from CallRecord collection for user "Melike"**
+- **Formats reports in Turkish with company names and call results**
+- **Uses Brevo SMTP for email delivery**
+
+### Required Environment Variables
+
+```bash
+# Brevo SMTP Settings
+BREVO_SMTP_USER=your_brevo_login_email
+BREVO_SMTP_PASS=your_brevo_smtp_password
+MAIL_FROM=noreply@odakkimya.com.tr
+
+# Report Recipients (production)
+REPORT_RECIPIENTS=gm@odakkimya.com.tr,director@odakkimya.com.tr
+```
+
+### Development Testing
+
+To test the email functionality in development:
+
+```bash
+POST /api/reports/test-daily-report
+```
+
+This endpoint is only available in development mode and will send a test report to `baris@odakkimya.com.tr`.
+
+### Report Format
+
+The email report includes:
+- Date in Turkish format (e.g., "15 Aralık 2024")
+- Total number of calls made by Melike
+- List of companies called with their results:
+  - Sekreter
+  - Satınalma
+  - Lab Şefi
+  - İhtiyaç Yok
+  - Potansiyel
+
 ## Contributing
 
 This project follows modern MERN stack practices with a clean separation between frontend and backend code. 

@@ -162,6 +162,20 @@ const getProfile = async (req, res) => {
       });
     }
 
+    // Check if daily reset is needed
+    const today = new Date();
+    const lastCallDate = user.lastCallDate || new Date(0);
+    const isNewDay = today.toDateString() !== lastCallDate.toDateString();
+    
+    let todaysCallsCount = user.todaysCalls || 0;
+    
+    // Reset todaysCalls if it's a new day
+    if (isNewDay && todaysCallsCount > 0) {
+      await User.findByIdAndUpdate(user._id, { todaysCalls: 0 });
+      todaysCallsCount = 0;
+      console.log(`Daily reset applied for user: ${user.userName}`);
+    }
+
     res.json({
       success: true,
       user: {
@@ -171,7 +185,7 @@ const getProfile = async (req, res) => {
         level: user.level,
         targetCallNumber: user.targetCallNumber,
         points: user.points,
-        todaysCalls: user.todaysCalls || 0,
+        todaysCalls: todaysCallsCount,
         lastLogin: user.lastLogin,
         createdAt: user.createdAt
       }

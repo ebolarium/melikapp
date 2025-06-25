@@ -22,7 +22,9 @@
     "dotenv": "^16.5.0",
     "express": "^4.21.2",
     "mongoose": "^8.16.0",
+    "node-cron": "^3.0.3",
     "node-fetch": "^3.3.2",
+    "nodemailer": "^6.9.8",
     "read-excel-file": "^5.8.8",
     "xlsx": "^0.18.5"
   },
