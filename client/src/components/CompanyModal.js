@@ -254,17 +254,9 @@ const CompanyModal = ({
                     className="form-select"
                   >
                     <option value="">Üretim türü seçiniz</option>
-                    {filterOptions && filterOptions.productions && filterOptions.productions.length > 0 ? (
-                      filterOptions.productions.map(production => (
-                        <option key={production} value={production}>{production}</option>
-                      ))
-                    ) : (
-                      <>
-                        <option value="Boyahane">Boyahane</option>
-                        <option value="Konfeksiyon">Konfeksiyon</option>
-                        <option value="Diğer">Diğer</option>
-                      </>
-                    )}
+                    <option value="Boyahane">Boyahane</option>
+                    <option value="Konfeksiyon">Konfeksiyon</option>
+                    <option value="Diğer">Diğer</option>
                   </select>
                 </div>
 

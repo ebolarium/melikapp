@@ -39,8 +39,8 @@ const AppBar = () => {
         {/* Logo/Brand Section */}
         <div className="app-bar-brand">
           <div className="logo">
-            <span className="logo-icon">📊</span>
-            <span className="logo-text">Nedir ki yani? APP</span>
+            <img src="/Logo.png" alt="Call Miner Logo" className="logo-image" />
+            <span className="logo-text">Call Miner</span>
           </div>
         </div>
 

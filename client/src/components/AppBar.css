@@ -1,10 +1,10 @@
 .app-bar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #F942A6 100%);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
-  border-bottom: 3px solid #5a67d8;
+  border-bottom: 3px solid #F942A6;
 }
 
 .app-bar-content {
@@ -25,7 +25,13 @@
   align-items: center;
   gap: 0.5rem;
   text-decoration: none;
-  color: white;
+  color: #333;
+}
+
+.logo-image {
+  height: 40px;
+  width: auto;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .logo-icon {
@@ -53,7 +59,7 @@
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   text-decoration: none;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(51, 51, 51, 0.9);
   border-radius: 8px;
   transition: all 0.3s ease;
   font-weight: 500;
@@ -63,14 +69,14 @@
 }
 
 .nav-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
+  background: rgba(249, 66, 166, 0.1);
+  color: #333;
   transform: translateY(-1px);
 }
 
 .nav-link.active {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+  background: rgba(249, 66, 166, 0.2);
+  color: #333;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -139,9 +145,9 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: white;
+  color: #333;
   padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(249, 66, 166, 0.1);
   border-radius: 25px;
   backdrop-filter: blur(10px);
 }
@@ -155,7 +161,7 @@
 
 .user-avatar {
   font-size: 1.5rem;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(249, 66, 166, 0.2);
   border-radius: 50%;
   width: 35px;
   height: 35px;
@@ -175,7 +181,7 @@
   font-size: 0.75rem;
   opacity: 0.9;
   line-height: 1;
-  color: #ffd700;
+  color: #333;
 }
 
 .user-level {
@@ -186,9 +192,9 @@
 }
 
 .logout-button {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(249, 66, 166, 0.1);
   border: none;
-  color: white;
+  color: #333;
   font-size: 1.3rem;
   padding: 0.5rem;
   border-radius: 8px;
@@ -199,7 +205,7 @@
 }
 
 .logout-button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(249, 66, 166, 0.2);
   transform: scale(1.1);
 }
 
@@ -290,6 +296,10 @@
   .logo-text {
     font-size: 1.2rem;
   }
+  
+  .logo-image {
+    height: 35px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -299,6 +309,10 @@
   
   .logo-text {
     display: none;
+  }
+  
+  .logo-image {
+    height: 30px;
   }
   
   .nav-item {
