@@ -1,5 +1,6 @@
 const { User, DailyCallHistory } = require('../models');
 const CallRecord = require('../models/CallRecord');
+const { getTurkeyNow, isSameTurkeyDay } = require('../utils/timezone');
 
 // Get daily call history for calendar view
 const getDailyHistory = async (req, res) => {
@@ -39,7 +40,7 @@ const getDailyHistory = async (req, res) => {
     
     // Calculate total days since user started
     const userStartDate = new Date(user.createdAt);
-    const today = new Date();
+    const today = getTurkeyNow();
     const totalDaysSinceStart = Math.floor((today - userStartDate) / (1000 * 60 * 60 * 24)) + 1;
     
     // Calculate statistics
@@ -63,13 +64,16 @@ const getDailyHistory = async (req, res) => {
       }
     }
     
+    // Get current Turkey time for "today" comparison
+    const turkeyToday = getTurkeyNow();
+    
     // Format response data
     const formattedDays = dailyRecords.map(record => ({
       date: record.date.toISOString().split('T')[0], // YYYY-MM-DD format
       callsMade: record.callsMade,
       target: record.targetForDay,
       targetReached: record.targetReached,
-      isToday: record.date.toDateString() === today.toDateString()
+      isToday: isSameTurkeyDay(record.date, turkeyToday)
     }));
     
     res.json({
@@ -119,7 +123,7 @@ const getCallStats = async (req, res) => {
     
     // Calculate total days since user started
     const userStartDate = new Date(user.createdAt);
-    const today = new Date();
+    const today = getTurkeyNow();
     const totalDaysSinceStart = Math.floor((today - userStartDate) / (1000 * 60 * 60 * 24)) + 1;
     
     // Get total target reached days
@@ -176,7 +180,7 @@ const getCallStats = async (req, res) => {
 const createTodayRecord = async (req, res) => {
   try {
     const { userId } = req.body;
-    const today = new Date();
+    const today = getTurkeyNow();
     
     // Validate userId parameter
     if (!userId) {
@@ -227,8 +231,8 @@ const getTodaysCalls = async (req, res) => {
   try {
     const userId = req.user.id;
     
-    // Get today's start and end
-    const today = new Date();
+    // Get today's start and end in Turkey timezone
+    const today = getTurkeyNow();
     const startOfDay = new Date(today);
     startOfDay.setHours(0, 0, 0, 0);
     const endOfDay = new Date(today);
@@ -261,9 +265,86 @@ const getTodaysCalls = async (req, res) => {
   }
 };
 
+// Get all users overview for admin panel
+const getAllUsersOverview = async (req, res) => {
+  try {
+    // Get all users
+    const users = await User.find({}, {
+      userName: 1,
+      email: 1,
+      level: 1,
+      targetCallNumber: 1,
+      points: 1,
+      isActive: 1,
+      createdAt: 1,
+      lastLogin: 1
+    }).sort({ userName: 1 });
+
+    // Get today's start and end in Turkey timezone
+    const today = getTurkeyNow();
+    const startOfDay = new Date(today);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(today);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    // Get today's call counts for all users
+    const todayCallCounts = await CallRecord.aggregate([
+      {
+        $match: {
+          callDate: {
+            $gte: startOfDay,
+            $lte: endOfDay
+          }
+        }
+      },
+      {
+        $group: {
+          _id: '$user',
+          todaysCalls: { $sum: 1 }
+        }
+      }
+    ]);
+
+    // Create a map for quick lookup
+    const callCountMap = {};
+    todayCallCounts.forEach(count => {
+      callCountMap[count._id.toString()] = count.todaysCalls;
+    });
+
+    // Format the data for admin panel
+    const usersOverview = users.map(user => ({
+      id: user._id,
+      userName: user.userName,
+      email: user.email,
+      level: user.level,
+      targetCallNumber: user.targetCallNumber,
+      todaysCalls: callCountMap[user._id.toString()] || 0, // Get actual today's calls
+      points: user.points,
+      isActive: user.isActive,
+      createdAt: user.createdAt,
+      lastLogin: user.lastLogin
+    }));
+
+    res.json({
+      success: true,
+      data: usersOverview,
+      count: usersOverview.length
+    });
+
+  } catch (error) {
+    console.error('Error getting users overview:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error retrieving users overview',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   getDailyHistory,
   getCallStats,
   createTodayRecord,
-  getTodaysCalls
+  getTodaysCalls,
+  getAllUsersOverview
 }; 

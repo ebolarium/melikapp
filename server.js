@@ -30,6 +30,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/companies', require('./routes/companies'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/reports', require('./routes/reports'));
+app.use('/api/email-config', require('./routes/emailConfig'));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is healthy' });

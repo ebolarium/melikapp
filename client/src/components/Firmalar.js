@@ -191,6 +191,49 @@ const Firmalar = () => {
     );
   };
 
+  // Handle company deletion
+  const handleDeleteClick = async (company) => {
+    // Show confirmation dialog
+    const isConfirmed = window.confirm(
+      `"${company.companyName}" firmasını silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz!`
+    );
+    
+    if (!isConfirmed) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await companiesAPI.deleteCompany(company._id);
+      
+      if (response.data.success) {
+        // Remove the company from local state
+        setCompanies(prevCompanies => 
+          prevCompanies.filter(c => c._id !== company._id)
+        );
+        
+        // Update pagination count
+        setPagination(prev => ({
+          ...prev,
+          totalCount: prev.totalCount - 1
+        }));
+        
+        // Show success message
+        alert('Firma başarıyla silindi!');
+        
+        // Refresh the list to ensure consistency
+        await fetchCompanies();
+      } else {
+        alert('Firma silinirken bir hata oluştu!');
+      }
+    } catch (err) {
+      console.error('Error deleting company:', err);
+      alert('Firma silinirken bir hata oluştu: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Handle call record created (same logic as Dashboard)
   const handleCallRecordCreated = async () => {
     console.log('📞 Call recorded from Firmalar page - starting refresh...');
@@ -395,6 +438,13 @@ const Firmalar = () => {
                               onClick={() => handleEditClick(company)}
                             >
                               ✏️
+                            </button>
+                            <button 
+                              className="btn-delete" 
+                              title="Sil"
+                              onClick={() => handleDeleteClick(company)}
+                            >
+                              🗑️
                             </button>
                           </div>
                         </td>

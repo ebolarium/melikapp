@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // API base URL configuration
@@ -16,16 +17,26 @@ export const AuthProvider = ({ children }) => {
 
   // Load user from localStorage on app start
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
+    const initializeAuth = async () => {
       try {
-        const userData = JSON.parse(savedUser);
-        setUser(userData);
-        setIsAuthenticated(true);
+        const savedUser = localStorage.getItem('user');
+        if (savedUser) {
+          const userData = JSON.parse(savedUser);
+          setUser(userData);
+          setIsAuthenticated(true);
+          console.log('✅ User loaded from localStorage:', userData.userName);
+        }
       } catch (error) {
+        console.error('❌ Error loading user from localStorage:', error);
         localStorage.removeItem('user');
+        setIsAuthenticated(false);
+        setUser(null);
+      } finally {
+        setInitialLoading(false);
       }
-    }
+    };
+
+    initializeAuth();
   }, []);
 
   // Refresh user data function
@@ -123,6 +134,7 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated,
     user,
     loading,
+    initialLoading,
     error,
     login,
     signup,

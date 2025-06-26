@@ -117,10 +117,30 @@ const CompanyModal = ({
             });
 
             if (callResponse.data.success) {
+              console.log('✅ Call record created successfully:', callResponse.data);
+              
               // Notify parent component to refresh user profile
               if (onCallRecordCreated) {
+                console.log('🔄 Calling onCallRecordCreated...');
                 onCallRecordCreated();
               }
+              
+              // Refresh calendar if available
+              if (window.refreshCalendar) {
+                console.log('📅 Calling window.refreshCalendar...');
+                window.refreshCalendar();
+              } else {
+                console.log('❌ window.refreshCalendar not available');
+              }
+              
+              // Refresh today's calls list if available
+              if (window.refreshTodaysCalls) {
+                console.log('📞 Calling window.refreshTodaysCalls...');
+                window.refreshTodaysCalls();
+              } else {
+                console.log('❌ window.refreshTodaysCalls not available');
+              }
+              
               setCallResult('');
               setCallNotes('');
             }

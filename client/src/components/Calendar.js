@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useImperativeHandle, forwardRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import './Calendar.css';
 
-const Calendar = () => {
+const Calendar = forwardRef((props, ref) => {
   const { user } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarData, setCalendarData] = useState(null);
@@ -14,8 +14,8 @@ const Calendar = () => {
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth() + 1;
 
-  // Fetch calendar data from API
-  const fetchCalendarData = async (year, month) => {
+  // Fetch calendar data from API - wrapped in useCallback to prevent infinite loops
+  const fetchCalendarData = useCallback(async (year, month) => {
     try {
       setLoading(true);
       setError(null);
@@ -24,12 +24,14 @@ const Calendar = () => {
         throw new Error('User not found');
       }
 
+      console.log(`📅 Fetching calendar data for ${year}-${month}, userId: ${user.id}`);
       const response = await api.get(`/users/daily-history?year=${year}&month=${month}&userId=${user.id}`);
 
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to fetch calendar data');
       }
 
+      console.log('📅 Calendar data received:', response.data.data);
       setCalendarData(response.data.data);
     } catch (err) {
       console.error('Error fetching calendar data:', err);
@@ -37,14 +39,54 @@ const Calendar = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
-  // Load calendar data when component mounts or date changes
+  // Expose refresh function to parent component
+  useImperativeHandle(ref, () => ({
+    refreshCalendar: () => {
+      console.log('📅 Refreshing calendar data...');
+      if (user && user.id) {
+        fetchCalendarData(currentYear, currentMonth);
+      }
+    },
+    debugCalendarData: () => {
+      console.log('🔍 Current calendar data:', {
+        calendarData,
+        currentYear,
+        currentMonth,
+        userId: user?.id,
+        todayDate: new Date().toISOString().split('T')[0]
+      });
+      
+      // Find today's data specifically
+      const today = new Date().toISOString().split('T')[0];
+      const todayData = calendarData?.days?.find(d => d.date === today);
+      console.log('📅 Today\'s data in calendar:', todayData);
+    }
+  }), [fetchCalendarData, currentYear, currentMonth, user, calendarData]);
+
+  // Listen for global refresh events
+  useEffect(() => {
+    const handleRefreshCalendar = () => {
+      console.log('📅 Calendar received refresh event');
+      if (user && user.id) {
+        fetchCalendarData(currentYear, currentMonth);
+      }
+    };
+
+    window.addEventListener('refreshCalendar', handleRefreshCalendar);
+    
+    return () => {
+      window.removeEventListener('refreshCalendar', handleRefreshCalendar);
+    };
+  }, [fetchCalendarData, currentYear, currentMonth, user]);
+
+  // Load initial data
   useEffect(() => {
     if (user && user.id) {
       fetchCalendarData(currentYear, currentMonth);
     }
-  }, [currentYear, currentMonth, user]);
+  }, [fetchCalendarData, currentYear, currentMonth, user]);
 
   // Navigate to previous month
   const goToPreviousMonth = () => {
@@ -214,6 +256,6 @@ const Calendar = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Calendar; 

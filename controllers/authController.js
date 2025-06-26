@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const { getTurkeyNow, isSameTurkeyDay } = require('../utils/timezone');
 
 // @desc    Register new user
 // @route   POST /api/auth/signup
@@ -81,8 +82,8 @@ const login = async (req, res) => {
       });
     }
 
-    // Update last login
-    user.lastLogin = new Date();
+    // Update last login with Turkey timezone
+    user.lastLogin = getTurkeyNow();
     await user.save();
 
     res.json({
@@ -162,10 +163,10 @@ const getProfile = async (req, res) => {
       });
     }
 
-    // Check if daily reset is needed
-    const today = new Date();
+    // Check if daily reset is needed using Turkey timezone
+    const today = getTurkeyNow();
     const lastCallDate = user.lastCallDate || new Date(0);
-    const isNewDay = today.toDateString() !== lastCallDate.toDateString();
+    const isNewDay = !isSameTurkeyDay(today, lastCallDate);
     
     let todaysCallsCount = user.todaysCalls || 0;
     

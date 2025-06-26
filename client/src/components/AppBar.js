@@ -50,6 +50,9 @@ const AppBar = () => {
             <Link to="/" className="nav-link">Dashboard</Link>
             <Link to="/firmalar" className="nav-link">Firmalar</Link>
             <Link to="/raporlar" className="nav-link">Raporlar</Link>
+            {user.level === 'Admin' && (
+              <Link to="/admin" className="nav-link admin-link">⚙️ Admin</Link>
+            )}
           </nav>
         )}
 

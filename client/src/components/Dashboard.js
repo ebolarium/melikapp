@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { companiesAPI, authAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import './Dashboard.css';
@@ -307,6 +307,7 @@ const RandomCompaniesCard = ({ companies, loading, onCompanyClick, filterOptions
 
 const Dashboard = () => {
   const { refreshUser } = useAuth();
+  const hasFetchedInitialData = useRef(false);
   const [companyCount, setCompanyCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -531,10 +532,13 @@ const Dashboard = () => {
 
   // Load initial data
   useEffect(() => {
-    fetchDashboardData();
-    fetchFilterOptions();
-    fetchUserProfile();
-    generateRandomCompanies(); // Generate initial random companies
+    if (!hasFetchedInitialData.current) {
+      fetchDashboardData();
+      fetchFilterOptions();
+      fetchUserProfile();
+      generateRandomCompanies(); // Generate initial random companies
+      hasFetchedInitialData.current = true;
+    }
   }, []);
 
   return (

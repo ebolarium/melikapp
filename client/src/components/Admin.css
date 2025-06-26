@@ -1,0 +1,377 @@
+/* Admin Page Styles */
+.admin-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  color: white;
+}
+
+.admin-header h1 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.admin-welcome {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* Admin Grid Layout */
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Admin Cards */
+.admin-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.card-header h2 {
+  margin: 0;
+  color: #2d3748;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.card-content p {
+  color: #718096;
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+}
+
+/* Feature Items */
+.placeholder-features {
+  margin: 1rem 0;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  color: #4a5568;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #f7fafc;
+}
+
+.feature-item:last-child {
+  border-bottom: none;
+}
+
+.feature-item.clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.feature-item.clickable:hover {
+  background: #f7fafc;
+  color: #667eea;
+  transform: translateX(4px);
+}
+
+/* Admin Buttons */
+.admin-btn {
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.admin-btn:hover {
+  background: linear-gradient(135deg, #3182ce 0%, #2b77cb 100%);
+  transform: translateY(-1px);
+}
+
+.admin-btn:disabled {
+  background: #cbd5e0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Quick Stats */
+.quick-stats {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.quick-stats h3 {
+  margin: 0 0 1.5rem 0;
+  color: #2d3748;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1rem;
+  background: #f7fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #4299e1;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: #718096;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Loading State */
+.loading {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #4a5568;
+  padding: 4rem;
+}
+
+/* Users Overview Table */
+.users-overview-section {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.users-overview-section h2 {
+  margin: 0 0 1rem 0;
+  color: #2d3748;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.users-table-container {
+  overflow-x: auto;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 0.85rem;
+}
+
+.users-table th {
+  background: #f8f9fa;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 0.8rem;
+}
+
+.users-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #f8f9fa;
+  vertical-align: middle;
+}
+
+.users-table tr:hover {
+  background: #f8f9fa;
+}
+
+.user-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.user-details .name {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.1rem;
+  font-size: 0.85rem;
+}
+
+.user-details .email {
+  font-size: 0.7rem;
+  color: #718096;
+}
+
+.level-badge {
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.level-badge.junior {
+  background: #bee3f8;
+  color: #2b77cb;
+}
+
+.level-badge.senior {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.level-badge.manager {
+  background: #fbb6ce;
+  color: #742a2a;
+}
+
+.level-badge.admin {
+  background: #ffd6cc;
+  color: #c53030;
+}
+
+.calls-number, .target-number {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #4299e1;
+}
+
+.status-badge {
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.status-badge.success {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.status-badge.pending {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+.points-number {
+  font-weight: 600;
+  color: #d69e2e;
+  font-size: 0.8rem;
+}
+
+.active-badge {
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.active-badge.active {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.active-badge.inactive {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+.table-loading {
+  text-align: center;
+  padding: 1rem;
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+.no-users {
+  text-align: center;
+  padding: 1rem;
+  color: #718096;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-header {
+    padding: 1.5rem 1rem;
+  }
+  
+  .admin-header h1 {
+    font-size: 2rem;
+  }
+  
+  .admin-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .card-header,
+  .card-content {
+    padding: 1rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
+  }
+} 

@@ -29,6 +29,21 @@ const TodaysCalls = () => {
     }
   };
 
+  // Listen for global refresh events
+  useEffect(() => {
+    const handleRefreshTodaysCalls = () => {
+      console.log('📞 TodaysCalls received refresh event');
+      fetchTodaysCalls();
+    };
+
+    window.addEventListener('refreshTodaysCalls', handleRefreshTodaysCalls);
+    
+    return () => {
+      window.removeEventListener('refreshTodaysCalls', handleRefreshTodaysCalls);
+    };
+  }, []);
+
+  // Load initial data
   useEffect(() => {
     fetchTodaysCalls();
   }, []);

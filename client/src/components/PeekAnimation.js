@@ -133,4 +133,4 @@ const PeekAnimation = () => {
   );
 };
 
-export default PeekAnimation; 
+export default PeekAnimation;   

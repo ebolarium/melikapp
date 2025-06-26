@@ -22,7 +22,95 @@
 }
 
 .raporlar-content {
-  margin-top: 2rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.raporlar-content h1 {
+  color: #2d3748;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.placeholder-content {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border-radius: 16px;
+  padding: 3rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.placeholder-content h2 {
+  color: #4a5568;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.placeholder-content > p {
+  color: #718096;
+  font-size: 1.2rem;
+  margin-bottom: 3rem;
+  line-height: 1.6;
+}
+
+.planned-features, .current-issues {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  text-align: left;
+}
+
+.planned-features {
+  border-left: 4px solid #48bb78;
+}
+
+.current-issues {
+  border-left: 4px solid #f56565;
+}
+
+.planned-features h3, .current-issues h3 {
+  color: #2d3748;
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.planned-features ul, .current-issues ul {
+  list-style: none;
+  padding: 0;
+}
+
+.planned-features li, .current-issues li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #4a5568;
+}
+
+.planned-features li:last-child, .current-issues li:last-child {
+  border-bottom: none;
+}
+
+.planned-features li strong, .current-issues li strong {
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.planned-features li::before {
+  content: "✅ ";
+  margin-right: 0.5rem;
+}
+
+.current-issues li::before {
+  content: "🔧 ";
+  margin-right: 0.5rem;
 }
 
 /* Reports Grid Layout */
@@ -79,6 +167,26 @@
   .calendar-section h2 {
     font-size: 1.2rem;
   }
+
+  .raporlar-content {
+    padding: 1rem;
+  }
+  
+  .raporlar-content h1 {
+    font-size: 2rem;
+  }
+  
+  .placeholder-content {
+    padding: 2rem;
+  }
+  
+  .placeholder-content h2 {
+    font-size: 1.5rem;
+  }
+  
+  .planned-features, .current-issues {
+    padding: 1.5rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -96,5 +204,396 @@
 
   .raporlar-content {
     margin-top: 1.5rem;
+  }
+}
+
+/* Reports Page Styles - Minimal Version */
+.content-container {
+  padding: 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.reports-header h1 {
+  color: #2d3748;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #4a5568;
+  padding: 2rem;
+}
+
+
+/* 3-Column Layout */
+.three-column-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  height: calc(100vh - 200px);
+}
+
+/* Calendar Section - 1/3 width, square */
+.calendar-section {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  aspect-ratio: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.calendar-header h2 {
+  margin: 0;
+  color: #2d3748;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.nav-btn {
+  background: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  min-width: 30px;
+}
+
+.nav-btn:hover {
+  background: #3182ce;
+}
+
+.calendar-grid {
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #f7fafc;
+}
+
+.weekday {
+  padding: 0.4rem;
+  text-align: center;
+  font-weight: 600;
+  color: #4a5568;
+  border-right: 1px solid #e2e8f0;
+  font-size: 0.7rem;
+}
+
+.weekday:last-child {
+  border-right: none;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  flex: 1;
+}
+
+.calendar-day {
+  border-right: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.3rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: background 0.2s ease;
+  background: white;
+}
+
+.calendar-day:nth-child(7n) {
+  border-right: none;
+}
+
+.calendar-day.empty {
+  background: #f9f9f9;
+}
+
+.calendar-day.today {
+  background: white;
+  border: 2px solid #4299e1;
+  box-shadow: inset 0 0 0 1px #4299e1;
+}
+
+.calendar-day.future {
+  background: white;
+  color: #2d3748;
+}
+
+.calendar-day.success {
+  background: #22c55e;
+  color: white;
+}
+
+.calendar-day.incomplete {
+  background: #ef4444;
+  color: white;
+}
+
+.calendar-day:hover:not(.empty) {
+  background: #edf2f7;
+}
+
+.day-number {
+  font-weight: 600;
+  color: inherit;
+  font-size: 0.75rem;
+  margin-bottom: 0.1rem;
+}
+
+.day-calls {
+  font-size: 1rem;
+  font-weight: 700;
+  color: inherit;
+  text-align: center;
+  line-height: 1;
+  margin-top: auto;
+}
+
+.calendar-day:not(.success):not(.incomplete) .day-number {
+  color: #2d3748;
+}
+
+.calendar-day:not(.success):not(.incomplete) .day-calls {
+  color: #4a5568;
+}
+
+.calendar-day.future .day-number {
+  color: #2d3748;
+}
+
+.calendar-day.future .day-calls {
+  color: #4a5568;
+}
+
+.success-icon {
+  position: absolute;
+  top: 0.15rem;
+  right: 0.15rem;
+  color: white;
+  font-weight: bold;
+  font-size: 0.8rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Today's Companies - 1/3 width */
+.todays-companies {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.todays-companies h2 {
+  margin: 0 0 0.75rem 0;
+  color: #2d3748;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.companies-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.company-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  margin-bottom: 0.25rem;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.company-item:hover {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.company-info {
+  flex: 1;
+}
+
+.company-name {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.1rem;
+  font-size: 0.9rem;
+}
+
+.company-details {
+  display: flex;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.city {
+  color: #718096;
+  background: #edf2f7;
+  padding: 0.1rem 0.3rem;
+  border-radius: 2px;
+  font-size: 0.7rem;
+}
+
+.result {
+  padding: 0.1rem 0.3rem;
+  border-radius: 2px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.result.potansiyel {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.result.sekreter {
+  background: #fbb6ce;
+  color: #742a2a;
+}
+
+.result.satınalma {
+  background: #b3f5ff;
+  color: #1a365d;
+}
+
+.result.lab.şefi {
+  background: #e9d8fd;
+  color: #44337a;
+}
+
+.result.ihtiyaç.yok {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+.call-time {
+  color: #718096;
+  font-size: 0.75rem;
+  font-weight: 500;
+  min-width: 45px;
+  text-align: right;
+}
+
+.no-calls {
+  text-align: center;
+  color: #718096;
+  padding: 1rem;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* Empty Section - 1/3 width */
+.empty-section {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-placeholder {
+  text-align: center;
+  color: #a0aec0;
+}
+
+.placeholder-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.placeholder-text {
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .content-container {
+    padding: 0.75rem;
+  }
+  
+  .reports-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .three-column-layout {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    height: auto;
+  }
+  
+  .calendar-section {
+    aspect-ratio: auto;
+    max-width: 100%;
+  }
+  
+  .calendar-section, .todays-companies, .empty-section {
+    padding: 0.75rem;
+  }
+  
+  .calendar-day {
+    padding: 0.15rem;
+  }
+  
+  .day-calls {
+    font-size: 0.8rem;
+  }
+  
+  .company-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    padding: 0.4rem;
+  }
+  
+  .call-time {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .nav-btn {
+    padding: 0.4rem 0.8rem;
   }
 } 

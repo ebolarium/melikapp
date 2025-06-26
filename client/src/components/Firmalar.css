@@ -269,6 +269,11 @@
   background: #fefcbf;
 }
 
+.btn-delete:hover {
+  background: #fed7d7;
+  color: #c53030;
+}
+
 .btn-call:hover {
   background: #e6fffa;
 }

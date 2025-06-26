@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Auth.css';
 
 const Login = ({ onSwitchToSignup }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -26,8 +28,8 @@ const Login = ({ onSwitchToSignup }) => {
 
     const result = await login(formData.email, formData.password);
     if (result.success) {
-      // Login successful - user will be redirected by App component
       console.log('Login successful');
+      navigate('/dashboard');
     }
   };
 

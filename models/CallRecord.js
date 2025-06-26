@@ -77,9 +77,18 @@ callRecordSchema.pre('save', function(next) {
 // Update company's total calls and user stats when a call is saved
 callRecordSchema.post('save', async function() {
   try {
+    console.log('📞 CallRecord post-save hook triggered for call:', {
+      id: this._id,
+      user: this.user,
+      company: this.company,
+      callResult: this.callResult,
+      callDate: this.callDate
+    });
+    
     const Company = mongoose.model('Company');
     const User = mongoose.model('User');
     const DailyCallHistory = mongoose.model('DailyCallHistory');
+    const { getTurkeyNow, getTurkeyDateOnly, isSameTurkeyDay } = require('../utils/timezone');
     
     // Prepare company update object
     const companyUpdate = {
@@ -94,16 +103,18 @@ callRecordSchema.post('save', async function() {
     
     // Update company call count, last contact date, and potentially spectro field
     await Company.findByIdAndUpdate(this.company, companyUpdate);
+    console.log('✅ Company updated successfully');
     
     // Update user points and today's calls if call result is set
     if (this.callResult) {
+      console.log('📊 Updating user stats and daily history...');
       const user = await User.findById(this.user);
       if (user) {
-        const today = new Date();
+        const turkeyNow = getTurkeyNow();
         const lastCallDate = user.lastCallDate || new Date(0);
         
-        // Check if it's a new day (different date)
-        const isNewDay = today.toDateString() !== lastCallDate.toDateString();
+        // Check if it's a new day using Turkey timezone comparison
+        const isNewDay = !isSameTurkeyDay(turkeyNow, lastCallDate);
         
         // If it's a new day, reset todaysCalls to 1, otherwise increment
         const todaysCallsUpdate = isNewDay ? 1 : user.todaysCalls + 1;
@@ -112,16 +123,29 @@ callRecordSchema.post('save', async function() {
           $inc: { points: 1 },
           $set: { 
             todaysCalls: todaysCallsUpdate,
-            lastCallDate: today
+            lastCallDate: turkeyNow
           }
         });
+        console.log('✅ User stats updated, todaysCalls:', todaysCallsUpdate);
         
         // Update daily call history for calendar tracking
-        await DailyCallHistory.updateDailyRecord(this.user, today, user.targetCallNumber);
+        console.log('📅 Updating daily call history...');
+        
+        // Use proper Turkey date for daily record
+        const turkeyDateOnly = getTurkeyDateOnly(turkeyNow);
+        
+        const dailyRecord = await DailyCallHistory.updateDailyRecord(this.user, turkeyDateOnly, user.targetCallNumber);
+        console.log('✅ Daily call history updated:', {
+          date: dailyRecord.date,
+          callsMade: dailyRecord.callsMade,
+          targetReached: dailyRecord.targetReached
+        });
       }
+    } else {
+      console.log('⚠️ No callResult set, skipping user stats and daily history update');
     }
   } catch (error) {
-    console.error('Error updating company and user stats:', error);
+    console.error('❌ Error updating company and user stats:', error);
   }
 });
 

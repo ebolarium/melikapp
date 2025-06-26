@@ -1,6 +1,7 @@
 const CallRecord = require('../models/CallRecord');
 const Company = require('../models/Company');
 const User = require('../models/User');
+const { EmailConfig } = require('../models');
 const { sendEmail } = require('./emailService');
 
 /**
@@ -36,18 +37,31 @@ const sendDailyReport = async () => {
     // Generate report content
     const reportContent = await generateReportContent(todaysCallRecords);
     
-    // Send email
-    const recipient = process.env.NODE_ENV === 'production' 
-      ? process.env.REPORT_RECIPIENTS // TODO: Add production emails later
-      : 'baris@odakkimya.com.tr'; // Development
+    // Get recipients from database
+    let recipients = [];
+    try {
+      const emailConfig = await EmailConfig.findOne();
+      if (emailConfig && emailConfig.reportRecipients.length > 0) {
+        recipients = emailConfig.reportRecipients;
+      } else {
+        // Fallback to default recipients if no config found
+        recipients = ['baris@odakkimya.com.tr'];
+      }
+    } catch (error) {
+      console.error('Error fetching email config, using fallback recipients:', error);
+      recipients = ['baris@odakkimya.com.tr'];
+    }
+    
+    // Send email to all recipients
+    const recipientList = recipients.join(', ');
     
     await sendEmail({
-      to: recipient,
+      to: recipientList,
       subject: `Arama Raporu - ${formatTurkishDate(today)}`,
       text: reportContent
     });
     
-    console.log(`Daily report sent to ${recipient}`);
+    console.log(`Daily report sent to ${recipients.length} recipients: ${recipientList}`);
     
   } catch (error) {
     console.error('Error generating/sending daily report:', error);
