@@ -271,17 +271,17 @@ const Raporlar = () => {
             <h2>⭐ Potansiyel Firmalar ({potentialCompanies.length})</h2>
             <div className="companies-list">
               {potentialCompanies.length > 0 ? (
-                potentialCompanies.map((call, index) => (
+                potentialCompanies.map((item, index) => (
                   <div key={index} className="company-item">
                     <div className="company-info">
-                      <div className="company-name">{call.company?.companyName || 'Bilinmeyen Firma'}</div>
+                      <div className="company-name">{item.company.companyName}</div>
                       <div className="company-details">
-                        {call.company?.city && <span className="city">{call.company.city}</span>}
-                        <span className="result potansiyel">Potansiyel</span>
+                        {item.company.city && <span className="city">{item.company.city}</span>}
+                        <span className="potential-count">{item.potentialCallCount} kez işaretlendi</span>
                       </div>
                     </div>
                     <div className="call-time">
-                      {new Date(call.callDate).toLocaleDateString('tr-TR', { 
+                      {new Date(item.latestCallDate).toLocaleDateString('tr-TR', { 
                         day: '2-digit',
                         month: '2-digit'
                       })}
