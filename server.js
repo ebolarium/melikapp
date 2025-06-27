@@ -3,6 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
 const { initCronJobs } = require('./services/cronService');
+const callSyncService = require('./services/callSyncService');
 require('dotenv').config();
 
 const app = express();
@@ -31,6 +32,7 @@ app.use('/api/companies', require('./routes/companies'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/reports', require('./routes/reports'));
 app.use('/api/email-config', require('./routes/emailConfig'));
+app.use('/api/animation-config', require('./routes/animationConfig'));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is healthy' });
@@ -87,4 +89,7 @@ app.listen(PORT, () => {
   
   // Initialize cron jobs
   initCronJobs();
+  
+  // Start call sync service
+  callSyncService.start();
 }); 

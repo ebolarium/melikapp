@@ -280,35 +280,20 @@ const getAllUsersOverview = async (req, res) => {
       lastLogin: 1
     }).sort({ userName: 1 });
 
-    // Get today's start and end in Turkey timezone
+    // Get today's call counts from DailyCallHistory
     const today = getTurkeyNow();
-    const startOfDay = new Date(today);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(today);
-    endOfDay.setHours(23, 59, 59, 999);
+    const todayDateOnly = new Date(today);
+    todayDateOnly.setHours(0, 0, 0, 0);
 
-    // Get today's call counts for all users
-    const todayCallCounts = await CallRecord.aggregate([
-      {
-        $match: {
-          callDate: {
-            $gte: startOfDay,
-            $lte: endOfDay
-          }
-        }
-      },
-      {
-        $group: {
-          _id: '$user',
-          todaysCalls: { $sum: 1 }
-        }
-      }
-    ]);
+    // Get today's daily call history for all users
+    const todayRecords = await DailyCallHistory.find({
+      date: todayDateOnly
+    });
 
     // Create a map for quick lookup
     const callCountMap = {};
-    todayCallCounts.forEach(count => {
-      callCountMap[count._id.toString()] = count.todaysCalls;
+    todayRecords.forEach(record => {
+      callCountMap[record.userId.toString()] = record.callsMade;
     });
 
     // Format the data for admin panel
@@ -318,7 +303,7 @@ const getAllUsersOverview = async (req, res) => {
       email: user.email,
       level: user.level,
       targetCallNumber: user.targetCallNumber,
-      todaysCalls: callCountMap[user._id.toString()] || 0, // Get actual today's calls
+      todaysCalls: callCountMap[user._id.toString()] || 0, // From DailyCallHistory
       points: user.points,
       isActive: user.isActive,
       createdAt: user.createdAt,
@@ -341,10 +326,54 @@ const getAllUsersOverview = async (req, res) => {
   }
 };
 
+// Get today's call count for current user (from DailyCallHistory)
+const getTodaysCallCount = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    // Get today's date in Turkey timezone
+    const today = getTurkeyNow();
+    const todayDateOnly = new Date(today);
+    todayDateOnly.setHours(0, 0, 0, 0);
+
+    // Get today's daily call history record
+    const todayRecord = await DailyCallHistory.findOne({
+      userId: userId,
+      date: todayDateOnly
+    });
+
+    // Get user's target
+    const user = await User.findById(userId, 'targetCallNumber');
+    const target = user ? user.targetCallNumber : 20;
+
+    const callsMade = todayRecord ? todayRecord.callsMade : 0;
+    const targetReached = todayRecord ? todayRecord.targetReached : false;
+
+    res.json({
+      success: true,
+      data: {
+        callsMade,
+        target,
+        targetReached,
+        progress: target > 0 ? Math.round((callsMade / target) * 100) : 0
+      }
+    });
+
+  } catch (error) {
+    console.error('Error getting today\'s call count:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error retrieving today\'s call count',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   getDailyHistory,
   getCallStats,
   createTodayRecord,
   getTodaysCalls,
+  getTodaysCallCount,
   getAllUsersOverview
 }; 

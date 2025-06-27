@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { Navigate } from 'react-router-dom';
 import api from '../services/api';
 import EmailConfigModal from './EmailConfigModal';
+import AnimationConfigModal from './AnimationConfigModal';
 import './Admin.css';
 
 const Admin = () => {
@@ -11,6 +12,7 @@ const Admin = () => {
   const [usersData, setUsersData] = useState([]);
   const [usersLoading, setUsersLoading] = useState(true);
   const [showEmailModal, setShowEmailModal] = useState(false);
+  const [showAnimationModal, setShowAnimationModal] = useState(false);
 
   // Fetch all users data
   const fetchUsersOverview = async () => {
@@ -136,6 +138,12 @@ const Admin = () => {
                 >
                   📧 Email Konfigürasyonu
                 </div>
+                <div 
+                  className="feature-item clickable"
+                  onClick={() => setShowAnimationModal(true)}
+                >
+                  🎬 Animasyon Ayarları
+                </div>
               </div>
             </div>
           </div>
@@ -253,6 +261,12 @@ const Admin = () => {
         <EmailConfigModal 
           isOpen={showEmailModal}
           onClose={() => setShowEmailModal(false)}
+        />
+
+        {/* Animation Configuration Modal */}
+        <AnimationConfigModal 
+          isOpen={showAnimationModal}
+          onClose={() => setShowAnimationModal(false)}
         />
       </div>
     </main>

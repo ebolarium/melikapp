@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { AnimationProvider } from './context/AnimationContext';
 import AuthWrapper from './components/AuthWrapper';
 import Dashboard from './components/Dashboard';
 import Firmalar from './components/Firmalar';
@@ -8,6 +9,8 @@ import Raporlar from './components/Raporlar';
 import Admin from './components/Admin';
 import AppBar from './components/AppBar';
 import ProtectedRoute from './components/ProtectedRoute';
+import PeekAnimation from './components/PeekAnimation';
+import UnicornAnimation from './components/UnicornAnimation';
 import './App.css';
 
 function App() {
@@ -38,36 +41,46 @@ function App() {
   return (
     <div className="App">
       <AuthProvider>
-        <Router>
-          <Routes>
-            <Route path="/login" element={<AuthWrapper />} />
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <AppBar />
-                <Dashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/firmalar" element={
-              <ProtectedRoute>
-                <AppBar />
-                <Firmalar />
-              </ProtectedRoute>
-            } />
-            <Route path="/raporlar" element={
-              <ProtectedRoute>
-                <AppBar />
-                <Raporlar />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin" element={
-              <ProtectedRoute>
-                <AppBar />
-                <Admin />
-              </ProtectedRoute>
-            } />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </Router>
+        <AnimationProvider>
+          <Router>
+            <Routes>
+              <Route path="/login" element={<AuthWrapper />} />
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <AppBar />
+                  <Dashboard />
+                  <PeekAnimation />
+                  <UnicornAnimation />
+                </ProtectedRoute>
+              } />
+              <Route path="/firmalar" element={
+                <ProtectedRoute>
+                  <AppBar />
+                  <Firmalar />
+                  <PeekAnimation />
+                  <UnicornAnimation />
+                </ProtectedRoute>
+              } />
+              <Route path="/raporlar" element={
+                <ProtectedRoute>
+                  <AppBar />
+                  <Raporlar />
+                  <PeekAnimation />
+                  <UnicornAnimation />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin" element={
+                <ProtectedRoute>
+                  <AppBar />
+                  <Admin />
+                  <PeekAnimation />
+                  <UnicornAnimation />
+                </ProtectedRoute>
+              } />
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </Router>
+        </AnimationProvider>
       </AuthProvider>
     </div>
   );

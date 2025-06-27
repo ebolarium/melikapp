@@ -10,7 +10,6 @@ const TURKEY_TIMEZONE = 'Europe/Istanbul';
 const getTurkeyNow = () => {
   const utcNow = new Date();
   const turkeyTime = toZonedTime(utcNow, TURKEY_TIMEZONE);
-  console.log(`🇹🇷 Turkey timezone: UTC ${utcNow.toISOString()} → Turkey ${turkeyTime.toISOString()}`);
   return turkeyTime;
 };
 
@@ -22,7 +21,6 @@ const getTurkeyNow = () => {
 const getTurkeyDateOnly = (date = new Date()) => {
   const turkeyTime = toZonedTime(date, TURKEY_TIMEZONE);
   turkeyTime.setHours(0, 0, 0, 0);
-  console.log(`🗓️ Turkey date only: ${turkeyTime.toISOString().split('T')[0]}`);
   return turkeyTime;
 };
 
@@ -50,7 +48,6 @@ const isSameTurkeyDay = (date1, date2) => {
          turkey1.getMonth() === turkey2.getMonth() &&
          turkey1.getDate() === turkey2.getDate();
          
-  console.log(`📅 Same Turkey day check: ${turkey1.toDateString()} === ${turkey2.toDateString()} → ${isSame}`);
   return isSame;
 };
 

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Lottie from 'lottie-react';
 import peekAnimationData from '../assets/animations/Peek_Animation.json';
+import { useAnimation } from '../context/AnimationContext';
 import './PeekAnimation.css';
 
 const PeekAnimation = () => {
+  const { animationSettings } = useAnimation();
   const [isVisible, setIsVisible] = useState(false);
   const [timeoutId, setTimeoutId] = useState(null);
   const [horizontalPosition, setHorizontalPosition] = useState(20);
@@ -60,6 +62,12 @@ const PeekAnimation = () => {
 
   // Function to schedule the next animation
   const scheduleNextAnimation = () => {
+    // Don't schedule if animation is disabled
+    if (!animationSettings.peekAnimationEnabled) {
+      console.log('🎭 Peek animation is disabled, not scheduling next animation');
+      return;
+    }
+    
     const delay = getRandomDelay();
     console.log(`🎭 Next peek animation scheduled in ${(delay / 1000).toFixed(1)} seconds`);
     
@@ -90,7 +98,9 @@ const PeekAnimation = () => {
 
   // Initialize the first animation schedule
   useEffect(() => {
-    scheduleNextAnimation();
+    if (animationSettings.peekAnimationEnabled) {
+      scheduleNextAnimation();
+    }
 
     // Cleanup timeout on unmount
     return () => {
@@ -98,7 +108,17 @@ const PeekAnimation = () => {
         clearTimeout(timeoutId);
       }
     };
-  }, []);
+  }, [animationSettings.peekAnimationEnabled]);
+
+  // Clear timeout when animation is disabled
+  useEffect(() => {
+    if (!animationSettings.peekAnimationEnabled && timeoutId) {
+      clearTimeout(timeoutId);
+      setTimeoutId(null);
+      setIsVisible(false);
+      console.log('🎭 Peek animation disabled, clearing timeouts');
+    }
+  }, [animationSettings.peekAnimationEnabled, timeoutId]);
 
   // Cleanup timeout when component updates
   useEffect(() => {
@@ -109,7 +129,8 @@ const PeekAnimation = () => {
     };
   }, [timeoutId]);
 
-  if (!isVisible) {
+  // Don't render if animation is disabled or not visible
+  if (!animationSettings.peekAnimationEnabled || !isVisible) {
     return null;
   }
 

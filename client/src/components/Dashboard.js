@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { companiesAPI, authAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useAnimation } from '../context/AnimationContext';
 import './Dashboard.css';
 import CompanyModal from './CompanyModal';
 import CallAnimation from './CallAnimation';
@@ -307,6 +308,7 @@ const RandomCompaniesCard = ({ companies, loading, onCompanyClick, filterOptions
 
 const Dashboard = () => {
   const { refreshUser } = useAuth();
+  const { animationSettings } = useAnimation();
   const hasFetchedInitialData = useRef(false);
   const [companyCount, setCompanyCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -645,7 +647,7 @@ const Dashboard = () => {
             
             // Check if target is reached after this call
             const updatedProfile = await authAPI.getProfile();
-            if (updatedProfile.data.success) {
+            if (updatedProfile.data.success && animationSettings.callAnimationsEnabled) {
               const user = updatedProfile.data.user;
               const hasReachedTarget = user.todaysCalls >= user.targetCallNumber && user.targetCallNumber > 0;
               
@@ -668,17 +670,19 @@ const Dashboard = () => {
       )}
 
               {/* Call Success Animation */}
-        <CallAnimation 
-          isVisible={showAnimation}
-          animationType={animationType}
-          isSequence={isAnimationSequence}
-          targetReached={targetReached}
-          onComplete={() => {
-            setShowAnimation(false);
-            setIsAnimationSequence(false);
-            setTargetReached(false);
-          }}
-        />
+        {animationSettings.callAnimationsEnabled && (
+          <CallAnimation 
+            isVisible={showAnimation}
+            animationType={animationType}
+            isSequence={isAnimationSequence}
+            targetReached={targetReached}
+            onComplete={() => {
+              setShowAnimation(false);
+              setIsAnimationSequence(false);
+              setTargetReached(false);
+            }}
+          />
+        )}
     </main>
   );
 };

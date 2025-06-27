@@ -72,6 +72,19 @@ const Raporlar = () => {
     }
   }, [user?.id, currentYear, currentMonth]);
 
+  // Auto-refresh every 5 minutes to sync with call sync service
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const refreshInterval = setInterval(() => {
+      console.log('📊 Auto-refreshing reports data...');
+      fetchCalendarData();
+      fetchTodaysCompanies();
+    }, 5 * 60 * 1000); // 5 minutes
+
+    return () => clearInterval(refreshInterval);
+  }, [user?.id, currentYear, currentMonth]);
+
   // Listen for global refresh events
   useEffect(() => {
     const handleRefreshReports = () => {

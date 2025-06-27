@@ -42,15 +42,7 @@ const userSchema = new mongoose.Schema({
     default: 0,
     min: [0, 'Points cannot be negative']
   },
-  todaysCalls: {
-    type: Number,
-    default: 0,
-    min: [0, 'Todays calls cannot be negative']
-  },
-  lastCallDate: {
-    type: Date,
-    default: Date.now
-  },
+
   isActive: {
     type: Boolean,
     default: true

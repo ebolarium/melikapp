@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Lottie from 'lottie-react';
 import unicornAnimationData from '../assets/animations/Unicorn_Animation.json';
+import { useAnimation } from '../context/AnimationContext';
 import './UnicornAnimation.css';
 
 const UnicornAnimation = () => {
+  const { animationSettings } = useAnimation();
   const [isVisible, setIsVisible] = useState(false);
   const [verticalPosition, setVerticalPosition] = useState(20);
   const [timeoutId, setTimeoutId] = useState(null);
@@ -51,6 +53,12 @@ const UnicornAnimation = () => {
 
   // Function to schedule the next animation
   const scheduleNextAnimation = () => {
+    // Don't schedule if animation is disabled
+    if (!animationSettings.unicornAnimationEnabled) {
+      console.log('🦄 Unicorn animation is disabled, not scheduling next animation');
+      return;
+    }
+    
     const delay = getRandomDelay();
     console.log(`🦄 Next unicorn flight scheduled in ${(delay / 60000).toFixed(1)} minutes`);
     
@@ -91,7 +99,9 @@ const UnicornAnimation = () => {
 
   // Initialize the first animation schedule
   useEffect(() => {
-    scheduleNextAnimation();
+    if (animationSettings.unicornAnimationEnabled) {
+      scheduleNextAnimation();
+    }
 
     // Cleanup timeout on unmount
     return () => {
@@ -99,7 +109,17 @@ const UnicornAnimation = () => {
         clearTimeout(timeoutId);
       }
     };
-  }, []);
+  }, [animationSettings.unicornAnimationEnabled]);
+
+  // Clear timeout when animation is disabled
+  useEffect(() => {
+    if (!animationSettings.unicornAnimationEnabled && timeoutId) {
+      clearTimeout(timeoutId);
+      setTimeoutId(null);
+      setIsVisible(false);
+      console.log('🦄 Unicorn animation disabled, clearing timeouts');
+    }
+  }, [animationSettings.unicornAnimationEnabled, timeoutId]);
 
   // Cleanup timeout when component updates
   useEffect(() => {
@@ -110,7 +130,8 @@ const UnicornAnimation = () => {
     };
   }, [timeoutId]);
 
-  if (!isVisible) {
+  // Don't render if animation is disabled or not visible
+  if (!animationSettings.unicornAnimationEnabled || !isVisible) {
     return null;
   }
 

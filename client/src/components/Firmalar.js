@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { companiesAPI, authAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useAnimation } from '../context/AnimationContext';
 import CompanyModal from './CompanyModal';
 import CallAnimation from './CallAnimation';
 import './Firmalar.css';
 
 const Firmalar = () => {
   const { refreshUser } = useAuth();
+  const { animationSettings } = useAnimation();
   // State management
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -158,11 +160,7 @@ const Firmalar = () => {
     setPagination(prev => ({ ...prev, currentPage: 1 }));
   };
 
-  // Format date for display
-  const formatDate = (dateString) => {
-    if (!dateString) return '-';
-    return new Date(dateString).toLocaleDateString('tr-TR');
-  };
+
 
   // Render sort icon
   const renderSortIcon = (column) => {
@@ -254,27 +252,31 @@ const Firmalar = () => {
         console.log('📊 Updated user data:', { points: user.points, todaysCalls: user.todaysCalls });
         const hasReachedTarget = user.todaysCalls >= user.targetCallNumber && user.targetCallNumber > 0;
         
-        if (hasReachedTarget) {
-          // Target reached - play heart then crown sequence
-          setTargetReached(true);
-          setIsAnimationSequence(true);
-          setAnimationType('heart');
-        } else {
-          // Normal call - just play heart animation
-          setTargetReached(false);
-          setIsAnimationSequence(false);
-          setAnimationType('heart');
+        if (animationSettings.callAnimationsEnabled) {
+          if (hasReachedTarget) {
+            // Target reached - play heart then crown sequence
+            setTargetReached(true);
+            setIsAnimationSequence(true);
+            setAnimationType('heart');
+          } else {
+            // Normal call - just play heart animation
+            setTargetReached(false);
+            setIsAnimationSequence(false);
+            setAnimationType('heart');
+          }
+          
+          setShowAnimation(true);
         }
-        
-        setShowAnimation(true);
       }
     } catch (error) {
       console.error('Error checking user profile:', error);
       // Still show animation even if profile check fails
-      setTargetReached(false);
-      setIsAnimationSequence(false);
-      setAnimationType('heart');
-      setShowAnimation(true);
+      if (animationSettings.callAnimationsEnabled) {
+        setTargetReached(false);
+        setIsAnimationSequence(false);
+        setAnimationType('heart');
+        setShowAnimation(true);
+      }
     }
   };
 
@@ -542,17 +544,19 @@ const Firmalar = () => {
         />
 
         {/* Call Success Animation */}
-        <CallAnimation 
-          isVisible={showAnimation}
-          animationType={animationType}
-          isSequence={isAnimationSequence}
-          targetReached={targetReached}
-          onComplete={() => {
-            setShowAnimation(false);
-            setIsAnimationSequence(false);
-            setTargetReached(false);
-          }}
-        />
+        {animationSettings.callAnimationsEnabled && (
+          <CallAnimation 
+            isVisible={showAnimation}
+            animationType={animationType}
+            isSequence={isAnimationSequence}
+            targetReached={targetReached}
+            onComplete={() => {
+              setShowAnimation(false);
+              setIsAnimationSequence(false);
+              setTargetReached(false);
+            }}
+          />
+        )}
       </div>
     </main>
   );
