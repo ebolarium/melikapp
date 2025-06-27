@@ -98,45 +98,41 @@ const seedDatabase = async () => {
         company: companies[0]._id,
         user: users[1]._id,
         callDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-        callResult: 'Potansiyel',
-        notes: 'İlk görüşme yapıldı, potansiyel müşteri olarak değerlendirildi'
+        sekretereТakildik: true,
+        potansiyel: true,
+        callDuration: 15,
+        notes: 'İlk görüşme yapıldı, satınalma ile görüşme planlandı',
+        followUpRequired: true,
+        followUpDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+        callType: 'Cold Call',
+        callStatus: 'Completed'
       },
       {
         company: companies[1]._id,
-        user: users[1]._id,
+        user: users[2]._id,
         callDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
-        callResult: 'Satınalma',
-        notes: 'Satınalma departmanına yönlendirildi'
+        satinaImayaYonlendirildi: true,
+        callDuration: 10,
+        notes: 'Satınalma departmanına yönlendirildi',
+        callType: 'Follow Up',
+        callStatus: 'Completed'
       },
       {
         company: companies[2]._id,
         user: users[1]._id,
-        callDate: new Date(Date.now() - 3 * 60 * 60 * 1000), // 3 hours ago
-        callResult: 'Potansiyel',
-        notes: 'Lab şefi ile görüştük, potansiyel müşteri'
-      },
-      {
-        company: companies[0]._id,
-        user: users[2]._id,
-        callDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-        callResult: 'Potansiyel',
-        notes: 'Teknik ekiple görüştük, ürünlerimize ilgi var'
-      },
-      {
-        company: companies[1]._id,
-        user: users[2]._id,
-        callDate: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
-        callResult: 'İhtiyaç Yok',
-        notes: 'Şu anda ihtiyaçları bulunmuyor'
+        callDate: new Date(),
+        labSefineUlasilamadi: true,
+        callDuration: 5,
+        notes: 'Lab şefi toplantıda, tekrar aranacak',
+        followUpRequired: true,
+        followUpDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
+        callType: 'Return Call',
+        callStatus: 'Completed'
       }
     ];
 
     const callRecords = await CallRecord.create(sampleCallRecords);
     console.log(`📞 Created ${callRecords.length} call records`);
-    
-    // Count potential calls for verification
-    const potentialCount = callRecords.filter(record => record.callResult === 'Potansiyel').length;
-    console.log(`⭐ Of which ${potentialCount} are marked as 'Potansiyel'`);
 
     console.log('✅ Database seeding completed successfully!');
     console.log('\n📋 Summary:');

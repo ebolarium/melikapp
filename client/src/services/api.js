@@ -33,7 +33,8 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Session expired or invalid
       localStorage.removeItem('user');
-      window.location.href = '/';
+      // Redirect to login page instead of root to avoid infinite loop
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }
@@ -44,6 +45,18 @@ export const authAPI = {
   login: (credentials) => api.post('/auth/login', credentials),
   register: (userData) => api.post('/auth/signup', userData),
   getProfile: () => api.get('/auth/profile'),
+  // Version without auto-redirect for initialization validation
+  getProfileSafe: () => {
+    return axios.get('/api/auth/profile', {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-User-Session': (() => {
+          const user = localStorage.getItem('user');
+          return user ? btoa(unescape(encodeURIComponent(user))) : '';
+        })()
+      }
+    });
+  }
 };
 
 // Companies API

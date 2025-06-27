@@ -22,12 +22,29 @@ export const AuthProvider = ({ children }) => {
         const savedUser = localStorage.getItem('user');
         if (savedUser) {
           const userData = JSON.parse(savedUser);
-          setUser(userData);
-          setIsAuthenticated(true);
-          console.log('✅ User loaded from localStorage:', userData.userName);
+          console.log('🔍 Validating saved user:', userData.userName);
+          
+          // Validate user with server to ensure they still exist and data is current
+          try {
+            const response = await authAPI.getProfileSafe();
+            if (response.data.success) {
+              const validatedUser = response.data.user;
+              localStorage.setItem('user', JSON.stringify(validatedUser));
+              setUser(validatedUser);
+              setIsAuthenticated(true);
+              console.log('✅ User validated and updated:', validatedUser.userName);
+            } else {
+              throw new Error('Profile validation failed');
+            }
+          } catch (profileError) {
+            console.log('❌ User validation failed, logging out:', profileError.message);
+            localStorage.removeItem('user');
+            setIsAuthenticated(false);
+            setUser(null);
+          }
         }
       } catch (error) {
-        console.error('❌ Error loading user from localStorage:', error);
+        console.error('❌ Error during auth initialization:', error);
         localStorage.removeItem('user');
         setIsAuthenticated(false);
         setUser(null);
