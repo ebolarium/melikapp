@@ -8,6 +8,7 @@ const Raporlar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarData, setCalendarData] = useState(null);
   const [todaysCompanies, setTodaysCompanies] = useState([]);
+  const [potentialCompanies, setPotentialCompanies] = useState([]);
   const [dailyStats, setDailyStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -41,6 +42,18 @@ const Raporlar = () => {
     }
   };
 
+  // Fetch potential companies
+  const fetchPotentialCompanies = async () => {
+    try {
+      const response = await api.get('/companies/potential');
+      if (response.data.success) {
+        setPotentialCompanies(response.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching potential companies:', error);
+    }
+  };
+
   // Get today's stats
   const getTodaysStats = () => {
     if (!calendarData?.days) return null;
@@ -62,7 +75,8 @@ const Raporlar = () => {
       setLoading(true);
       await Promise.all([
         fetchCalendarData(),
-        fetchTodaysCompanies()
+        fetchTodaysCompanies(),
+        fetchPotentialCompanies()
       ]);
       setLoading(false);
     };
@@ -80,6 +94,7 @@ const Raporlar = () => {
       console.log('📊 Auto-refreshing reports data...');
       fetchCalendarData();
       fetchTodaysCompanies();
+      fetchPotentialCompanies();
     }, 5 * 60 * 1000); // 5 minutes
 
     return () => clearInterval(refreshInterval);
@@ -92,6 +107,7 @@ const Raporlar = () => {
       if (user?.id) {
         fetchCalendarData();
         fetchTodaysCompanies();
+        fetchPotentialCompanies();
       }
     };
 
@@ -250,11 +266,31 @@ const Raporlar = () => {
             </div>
           </div>
 
-          {/* Empty Square - 1/3 */}
-          <div className="empty-section">
-            <div className="empty-placeholder">
-              <div className="placeholder-icon">📋</div>
-              <div className="placeholder-text">Gelecek özellikler için ayrılmış alan</div>
+          {/* Potential Companies - 1/3 */}
+          <div className="potential-companies">
+            <h2>⭐ Potansiyel Firmalar ({potentialCompanies.length})</h2>
+            <div className="companies-list">
+              {potentialCompanies.length > 0 ? (
+                potentialCompanies.map((item, index) => (
+                  <div key={index} className="company-item">
+                    <div className="company-info">
+                      <div className="company-name">{item.company.companyName}</div>
+                      <div className="company-details">
+                        {item.company.city && <span className="city">{item.company.city}</span>}
+                        <span className="potential-count">{item.potentialCallCount} kez işaretlendi</span>
+                      </div>
+                    </div>
+                    <div className="call-time">
+                      {new Date(item.latestCallDate).toLocaleDateString('tr-TR', { 
+                        day: '2-digit',
+                        month: '2-digit'
+                      })}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="no-calls">Henüz potansiyel olarak işaretlenmiş firma yok.</div>
+              )}
             </div>
           </div>
         </div>

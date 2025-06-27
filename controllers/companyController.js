@@ -1,6 +1,7 @@
 const Company = require('../models/Company');
 const CallRecord = require('../models/CallRecord');
 const User = require('../models/User');
+const mongoose = require('mongoose');
 
 // Get all companies with search, filtering, and pagination
 const getCompanies = async (req, res) => {
@@ -360,6 +361,83 @@ const getCompanyCallRecords = async (req, res) => {
   }
 };
 
+// Get companies with recent "Potansiyel" calls
+const getPotentialCompanies = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    // Get companies that have recent "Potansiyel" call results
+    const potentialCompanies = await CallRecord.aggregate([
+      {
+        $match: {
+          user: mongoose.Types.ObjectId(userId),
+          callResult: 'Potansiyel'
+        }
+      },
+      {
+        $sort: { callDate: -1 }
+      },
+      {
+        $group: {
+          _id: '$company',
+          latestCall: { $first: '$$ROOT' },
+          callCount: { $sum: 1 }
+        }
+      },
+      {
+        $lookup: {
+          from: 'companies',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'company'
+        }
+      },
+      {
+        $unwind: '$company'
+      },
+      {
+        $match: {
+          'company.isActive': true
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          company: {
+            _id: '$company._id',
+            companyName: '$company.companyName',
+            person: '$company.person',
+            phone: '$company.phone',
+            city: '$company.city'
+          },
+          latestCallDate: '$latestCall.callDate',
+          potentialCallCount: '$callCount'
+        }
+      },
+      {
+        $sort: { latestCallDate: -1 }
+      },
+      {
+        $limit: 20 // Limit to recent 20 potential companies
+      }
+    ]);
+
+    res.json({
+      success: true,
+      data: potentialCompanies,
+      count: potentialCompanies.length
+    });
+
+  } catch (error) {
+    console.error('Error fetching potential companies:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching potential companies',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   getCompanies,
   getCompanyById,
@@ -369,5 +447,6 @@ module.exports = {
   getFilterOptions,
   getCompanyStats,
   createCallRecord,
-  getCompanyCallRecords
+  getCompanyCallRecords,
+  getPotentialCompanies
 }; 

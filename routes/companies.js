@@ -10,7 +10,8 @@ const {
   getFilterOptions,
   getCompanyStats,
   createCallRecord,
-  getCompanyCallRecords
+  getCompanyCallRecords,
+  getPotentialCompanies
 } = require('../controllers/companyController');
 
 // GET /api/companies/filter-options - Get unique values for filters (must come before /:id)
@@ -18,6 +19,9 @@ router.get('/filter-options', simpleAuth, getFilterOptions);
 
 // GET /api/companies/stats - Get company statistics (must come before /:id)
 router.get('/stats', simpleAuth, getCompanyStats);
+
+// GET /api/companies/potential - Get companies with "Potansiyel" calls (must come before /:id)
+router.get('/potential', simpleAuth, getPotentialCompanies);
 
 // POST /api/companies/call-records - Create call record (must come before /:id)
 router.post('/call-records', simpleAuth, createCallRecord);
