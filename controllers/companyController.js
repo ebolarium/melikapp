@@ -366,66 +366,23 @@ const getPotentialCompanies = async (req, res) => {
   try {
     const userId = req.user.id;
     
-    // Get companies that have recent "Potansiyel" call results
-    const potentialCompanies = await CallRecord.aggregate([
-      {
-        $match: {
-          user: mongoose.Types.ObjectId(userId),
-          callResult: 'Potansiyel'
-        }
-      },
-      {
-        $sort: { callDate: -1 }
-      },
-      {
-        $group: {
-          _id: '$company',
-          latestCall: { $first: '$$ROOT' },
-          callCount: { $sum: 1 }
-        }
-      },
-      {
-        $lookup: {
-          from: 'companies',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'company'
-        }
-      },
-      {
-        $unwind: '$company'
-      },
-      {
-        $match: {
-          'company.isActive': true
-        }
-      },
-      {
-        $project: {
-          _id: 0,
-          company: {
-            _id: '$company._id',
-            companyName: '$company.companyName',
-            person: '$company.person',
-            phone: '$company.phone',
-            city: '$company.city'
-          },
-          latestCallDate: '$latestCall.callDate',
-          potentialCallCount: '$callCount'
-        }
-      },
-      {
-        $sort: { latestCallDate: -1 }
-      },
-      {
-        $limit: 20 // Limit to recent 20 potential companies
-      }
-    ]);
+    // Get call records where callResult is 'Potansiyel'
+    const potentialCalls = await CallRecord.find({
+      user: userId,
+      callResult: 'Potansiyel'
+    })
+    .populate('company', 'companyName person phone city isActive')
+    .populate('user', 'userName')
+    .sort({ callDate: -1 })
+    .limit(20);
+
+    // Filter out inactive companies and format the response
+    const validPotentialCalls = potentialCalls.filter(call => call.company?.isActive);
 
     res.json({
       success: true,
-      data: potentialCompanies,
-      count: potentialCompanies.length
+      data: validPotentialCalls,
+      count: validPotentialCalls.length
     });
 
   } catch (error) {
