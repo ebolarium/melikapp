@@ -77,7 +77,7 @@ function App() {
                   <UnicornAnimation />
                 </ProtectedRoute>
               } />
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/" element={<AuthWrapper />} />
             </Routes>
           </Router>
         </AnimationProvider>

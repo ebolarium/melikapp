@@ -101,6 +101,21 @@ callRecordSchema.post('save', async function() {
       });
     }
     
+    // Add call to daily record (separate system)
+    try {
+      const DailyRecordService = require('../services/dailyRecordService');
+      await DailyRecordService.addCallToTodaysRecord(
+        this.user,
+        this._id,
+        this.company,
+        this.callResult,
+        this.callDate
+      );
+    } catch (dailyRecordError) {
+      console.error('❌ Error adding call to daily record:', dailyRecordError.message);
+      // Don't throw error to prevent main call creation from failing
+    }
+    
     // Note: Daily call history is now updated by the call sync service
     
   } catch (error) {

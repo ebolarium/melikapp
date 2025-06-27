@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
-const { initCronJobs } = require('./services/cronService');
+const { initCronJobs, initDailyRecords } = require('./services/cronService');
 const callSyncService = require('./services/callSyncService');
 require('dotenv').config();
 
@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -79,13 +79,16 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`🚀 Server is running on port ${PORT}`);
   console.log(`📊 Using MongoDB database`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   if (process.env.NODE_ENV === 'production') {
     console.log('📁 Serving React app from client/build folder');
   }
+  
+  // Initialize daily records on startup
+  await initDailyRecords();
   
   // Initialize cron jobs
   initCronJobs();

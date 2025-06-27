@@ -31,10 +31,14 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
+      console.log('🔄 401 error detected, clearing auth and redirecting to login');
       // Session expired or invalid
       localStorage.removeItem('user');
-      // Redirect to login page instead of root to avoid infinite loop
-      window.location.href = '/login';
+      // Only redirect if not already on login page to prevent loops
+      if (window.location.pathname !== '/login') {
+        console.log('🔄 Redirecting to login from:', window.location.pathname);
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

@@ -1,34 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 import './Raporlar.css';
 
 const Raporlar = () => {
   const { user } = useAuth();
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [calendarData, setCalendarData] = useState(null);
   const [todaysCompanies, setTodaysCompanies] = useState([]);
   const [potentialCompanies, setPotentialCompanies] = useState([]);
-  const [dailyStats, setDailyStats] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  // Get current month and year
-  const currentYear = currentDate.getFullYear();
-  const currentMonth = currentDate.getMonth() + 1;
-
-  // Fetch calendar data for the month
-  const fetchCalendarData = async () => {
-    try {
-      if (!user?.id) return;
-
-      const response = await api.get(`/users/daily-history?year=${currentYear}&month=${currentMonth}&userId=${user.id}`);
-      if (response.data.success) {
-        setCalendarData(response.data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching calendar data:', error);
-    }
-  };
+  const [calendarDate, setCalendarDate] = useState(new Date());
+  const [dailyRecords, setDailyRecords] = useState({});
 
   // Fetch today's called companies
   const fetchTodaysCompanies = async () => {
@@ -45,38 +28,42 @@ const Raporlar = () => {
   // Fetch potential companies
   const fetchPotentialCompanies = async () => {
     try {
-      const response = await api.get('/companies/potential');
+      const response = await api.get('/reports/potential-companies');
       if (response.data.success) {
-        setPotentialCompanies(response.data.data);
+        setPotentialCompanies(response.data.companies);
       }
     } catch (error) {
       console.error('Error fetching potential companies:', error);
     }
   };
 
-  // Get today's stats
-  const getTodaysStats = () => {
-    if (!calendarData?.days) return null;
 
-    const today = new Date().toISOString().split('T')[0];
-    const todayData = calendarData.days.find(day => day.isToday);
-    
-    return todayData ? {
-      callsMade: todayData.callsMade,
-      target: todayData.target,
-      targetReached: todayData.targetReached,
-      progress: todayData.target > 0 ? Math.round((todayData.callsMade / todayData.target) * 100) : 0
-    } : null;
+
+  // Fetch daily records for calendar
+  const fetchDailyRecords = async (date = calendarDate) => {
+    try {
+      if (!user?.id) return;
+
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+
+      const response = await api.get(`/users/daily-records?year=${year}&month=${month}&userId=${user.id}`);
+      if (response.data.success) {
+        setDailyRecords(response.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching daily records:', error);
+    }
   };
 
-  // Load data when component mounts or date changes
+  // Load data when component mounts
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       await Promise.all([
-        fetchCalendarData(),
         fetchTodaysCompanies(),
-        fetchPotentialCompanies()
+        fetchPotentialCompanies(),
+        fetchDailyRecords()
       ]);
       setLoading(false);
     };
@@ -84,7 +71,76 @@ const Raporlar = () => {
     if (user?.id) {
       loadData();
     }
-  }, [user?.id, currentYear, currentMonth]);
+  }, [user?.id]);
+
+  // Fetch daily records when calendar date changes
+  useEffect(() => {
+    if (user?.id) {
+      fetchDailyRecords(calendarDate);
+    }
+  }, [calendarDate, user?.id]);
+
+  // Helper function to check if a date is weekend
+  const isWeekend = (date) => {
+    const day = date.getDay();
+    return day === 0 || day === 6; // Sunday or Saturday
+  };
+
+  // Helper function to get day record
+  const getDayRecord = (date) => {
+    // Use local date string to avoid timezone issues
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateKey = `${year}-${month}-${day}`;
+    return dailyRecords[dateKey] || null;
+  };
+
+  // Helper function to determine tile class
+  const getTileClassName = ({ date, view }) => {
+    if (view !== 'month') return '';
+    
+    // Weekend
+    if (isWeekend(date)) {
+      return 'weekend-day';
+    }
+
+    const record = getDayRecord(date);
+    
+    // No record
+    if (!record) {
+      return 'no-record-day';
+    }
+
+    // Has record - check if target reached
+    if (record.targetReached || record.callCount >= record.dailyTarget) {
+      return 'target-reached-day';
+    } else {
+      return 'has-record-day';
+    }
+  };
+
+  // Helper function to render tile content
+  const getTileContent = ({ date, view }) => {
+    if (view !== 'month') return null;
+    
+    // No content for weekends
+    if (isWeekend(date)) return null;
+
+    const record = getDayRecord(date);
+    
+    // No record
+    if (!record) return null;
+
+    // Has record - show call count / target
+    return (
+      <div className="day-progress">
+        <span className="call-count">{record.callCount}</span>
+        <span className="target-divider">/</span>
+        <span className="daily-target">{record.dailyTarget}</span>
+      </div>
+    );
+  };
 
   // Auto-refresh every 5 minutes to sync with call sync service
   useEffect(() => {
@@ -92,90 +148,31 @@ const Raporlar = () => {
 
     const refreshInterval = setInterval(() => {
       console.log('📊 Auto-refreshing reports data...');
-      fetchCalendarData();
       fetchTodaysCompanies();
       fetchPotentialCompanies();
+      fetchDailyRecords();
     }, 5 * 60 * 1000); // 5 minutes
 
     return () => clearInterval(refreshInterval);
-  }, [user?.id, currentYear, currentMonth]);
+  }, [user?.id]);
 
   // Listen for global refresh events
   useEffect(() => {
     const handleRefreshReports = () => {
       console.log('📊 Reports received refresh event');
       if (user?.id) {
-        fetchCalendarData();
         fetchTodaysCompanies();
         fetchPotentialCompanies();
+        fetchDailyRecords();
       }
     };
 
-    window.addEventListener('refreshCalendar', handleRefreshReports);
     window.addEventListener('refreshTodaysCalls', handleRefreshReports);
     
     return () => {
-      window.removeEventListener('refreshCalendar', handleRefreshReports);
       window.removeEventListener('refreshTodaysCalls', handleRefreshReports);
     };
-  }, [user?.id, currentYear, currentMonth]);
-
-  // Update daily stats when calendar data changes
-  useEffect(() => {
-    setDailyStats(getTodaysStats());
-  }, [calendarData]);
-
-  // Navigate to previous month
-  const goToPreviousMonth = () => {
-    setCurrentDate(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
-  };
-
-  // Navigate to next month
-  const goToNextMonth = () => {
-    setCurrentDate(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
-  };
-
-  // Generate calendar grid
-  const generateCalendarDays = () => {
-    if (!calendarData?.days) return [];
-
-    const firstDay = new Date(currentYear, currentMonth - 1, 1);
-    const lastDay = new Date(currentYear, currentMonth, 0);
-    const startDay = firstDay.getDay(); // 0 = Sunday
-    const daysInMonth = lastDay.getDate();
-
-    const days = [];
-    
-    // Add empty cells for days before month starts
-    for (let i = 0; i < startDay; i++) {
-      days.push(null);
-    }
-
-    // Add actual days of the month
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    for (let day = 1; day <= daysInMonth; day++) {
-      const dateStr = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-      const dayData = calendarData.days.find(d => d.date === dateStr);
-      const currentDayDate = new Date(currentYear, currentMonth - 1, day);
-      currentDayDate.setHours(0, 0, 0, 0);
-      
-      const isFutureDay = currentDayDate > today;
-      
-      days.push({
-        day,
-        dateStr,
-        callsMade: dayData?.callsMade || 0,
-        target: dayData?.target || user?.targetCallNumber || 20,
-        targetReached: dayData?.targetReached || false,
-        isToday: dayData?.isToday || false,
-        isFuture: isFutureDay
-      });
-    }
-
-    return days;
-  };
+  }, [user?.id]);
 
   if (loading) {
     return (
@@ -186,12 +183,6 @@ const Raporlar = () => {
       </main>
     );
   }
-
-  const calendarDays = generateCalendarDays();
-  const monthName = new Date(currentYear, currentMonth - 1).toLocaleDateString('tr-TR', { 
-    month: 'long', 
-    year: 'numeric' 
-  });
 
   return (
     <main className="main-content">
@@ -205,36 +196,31 @@ const Raporlar = () => {
           {/* Calendar - 1/3 */}
           <div className="calendar-section">
             <div className="calendar-header">
-              <button onClick={goToPreviousMonth} className="nav-btn">‹</button>
-              <h2>{monthName}</h2>
-              <button onClick={goToNextMonth} className="nav-btn">›</button>
+              <h3>📅 Arama Takvimi</h3>
             </div>
-            
-            <div className="calendar-grid">
-              <div className="calendar-weekdays">
-                {['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'].map(day => (
-                  <div key={day} className="weekday">{day}</div>
-                ))}
-              </div>
-              
-              <div className="calendar-days">
-                {calendarDays.map((dayData, index) => (
-                                  <div key={index} className={`calendar-day ${
-                  !dayData ? 'empty' : 
-                  dayData.isToday ? 'today' :
-                  dayData.isFuture ? 'future' :
-                  dayData.targetReached ? 'success' : 'incomplete'
-                }`}>
-                    {dayData && (
-                      <>
-                        <div className="day-number">{dayData.day}</div>
-                        <div className="day-calls">{dayData.callsMade}</div>
-                        {dayData.targetReached && <div className="success-icon">✓</div>}
-                      </>
-                    )}
-                  </div>
-                ))}
-              </div>
+            <div className="minimal-calendar">
+              <Calendar
+                value={calendarDate}
+                onActiveStartDateChange={({ activeStartDate }) => setCalendarDate(activeStartDate)}
+                tileClassName={getTileClassName}
+                tileContent={getTileContent}
+                showNeighboringMonth={false}
+                showWeekNumbers={false}
+                minDetail="month"
+                maxDetail="month"
+                prev2Label={null}
+                next2Label={null}
+                locale="en-US"
+                formatShortWeekday={(locale, date) => {
+                  // US calendar: Week starts Sunday
+                  // date.getDay(): 0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday
+                  // Display order: Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
+                  const days = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt']; // Sun, Mon, Tue, Wed, Thu, Fri, Sat
+                  const dayName = days[date.getDay()];
+                  console.log(`Weekday: ${date.getDay()} = ${dayName}, date: ${date.toDateString()}`);
+                  return dayName;
+                }}
+              />
             </div>
           </div>
 
@@ -268,28 +254,29 @@ const Raporlar = () => {
 
           {/* Potential Companies - 1/3 */}
           <div className="potential-companies">
-            <h2>⭐ Potansiyel Firmalar ({potentialCompanies.length})</h2>
+            <h2>🎯 Potansiyel Firmalar ({potentialCompanies.length})</h2>
             <div className="companies-list">
               {potentialCompanies.length > 0 ? (
-                potentialCompanies.map((item, index) => (
-                  <div key={index} className="company-item">
+                potentialCompanies.map((company, index) => (
+                  <div key={company._id} className="company-item potential">
                     <div className="company-info">
-                      <div className="company-name">{item.company.companyName}</div>
+                      <div className="company-name">{company.companyName}</div>
                       <div className="company-details">
-                        {item.company.city && <span className="city">{item.company.city}</span>}
-                        <span className="potential-count">{item.potentialCallCount} kez işaretlendi</span>
+                        {company.city && <span className="city">{company.city}</span>}
+                        <span className="result potansiyel">Potansiyel</span>
                       </div>
                     </div>
                     <div className="call-time">
-                      {new Date(item.latestCallDate).toLocaleDateString('tr-TR', { 
-                        day: '2-digit',
-                        month: '2-digit'
+                      {new Date(company.lastCallDate).toLocaleDateString('tr-TR', { 
+                        day: '2-digit', 
+                        month: '2-digit',
+                        year: 'numeric'
                       })}
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="no-calls">Henüz potansiyel olarak işaretlenmiş firma yok.</div>
+                <div className="no-calls">Henüz potansiyel firma yok.</div>
               )}
             </div>
           </div>

@@ -5,8 +5,11 @@ import { useAuth } from '../context/AuthContext';
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user, initialLoading } = useAuth();
   
+  console.log('🛡️ ProtectedRoute: isAuthenticated:', isAuthenticated, 'user:', user?.userName, 'initialLoading:', initialLoading);
+  
   // Show loading during initial authentication check
   if (initialLoading) {
+    console.log('🛡️ ProtectedRoute: Showing loading screen');
     return (
       <div style={{
         display: 'flex',
@@ -23,10 +26,12 @@ const ProtectedRoute = ({ children }) => {
   
   // If not authenticated, redirect to login
   if (!isAuthenticated || !user) {
+    console.log('🛡️ ProtectedRoute: Not authenticated, redirecting to login');
     return <Navigate to="/login" replace />;
   }
   
   // If authenticated, render the protected component
+  console.log('🛡️ ProtectedRoute: Authenticated, rendering protected content');
   return children;
 };
 

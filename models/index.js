@@ -4,6 +4,7 @@ const CallRecord = require('./CallRecord');
 const DailyCallHistory = require('./DailyCallHistory');
 const EmailConfig = require('./EmailConfig');
 const AnimationConfig = require('./AnimationConfig');
+const DailyUserRecord = require('./DailyUserRecord');
 
 module.exports = {
   User,
@@ -11,5 +12,6 @@ module.exports = {
   CallRecord,
   DailyCallHistory,
   EmailConfig,
-  AnimationConfig
+  AnimationConfig,
+  DailyUserRecord
 }; 

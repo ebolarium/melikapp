@@ -44,4 +44,70 @@ router.post('/sync-calls', simpleAuth, async (req, res) => {
   }
 });
 
+// Get user's daily records for calendar (new endpoint)
+router.get('/daily-records', async (req, res) => {
+  try {
+    const { year, month, userId } = req.query;
+    
+    if (!year || !month) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Year and month are required' 
+      });
+    }
+
+    const targetUserId = userId || req.user?.id;
+    if (!targetUserId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'User ID is required' 
+      });
+    }
+
+    const DailyUserRecord = require('../models/DailyUserRecord');
+    
+    // Create date range for the month
+    const startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+    const endDate = new Date(parseInt(year), parseInt(month), 0);
+    endDate.setHours(23, 59, 59, 999);
+
+    // Fetch daily records for the month
+    const dailyRecords = await DailyUserRecord.find({
+      user: targetUserId,
+      date: {
+        $gte: startDate,
+        $lte: endDate
+      }
+    }).select('date dailyTarget callCount targetReached');
+
+    // Convert to a map for easy lookup
+    const recordsMap = {};
+    dailyRecords.forEach(record => {
+      // Format date using Turkish timezone to avoid UTC conversion issues
+      const year = record.date.getFullYear();
+      const month = String(record.date.getMonth() + 1).padStart(2, '0');
+      const day = String(record.date.getDate()).padStart(2, '0');
+      const dateKey = `${year}-${month}-${day}`;
+      
+      recordsMap[dateKey] = {
+        dailyTarget: record.dailyTarget,
+        callCount: record.callCount,
+        targetReached: record.targetReached
+      };
+    });
+
+    res.json({
+      success: true,
+      data: recordsMap
+    });
+
+  } catch (error) {
+    console.error('Error fetching daily records for calendar:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to fetch daily records' 
+    });
+  }
+});
+
 module.exports = router; 
